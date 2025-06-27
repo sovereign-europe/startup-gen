@@ -1,39 +1,17 @@
-# Startup Gen
+# Unicorn4
 
-<div align="center">
+Welcome to Unicorn4! This project was initialized with Startup CLI.
 
-A CLI tool for early-stage startups to build lean startup methodology. This tool helps entrepreneurs systematically approach building their startup using proven lean startup principles.
+## Getting Started
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+This is your lean startup project. Use the Startup CLI to build your customer segments, validate your ideas, and iterate quickly.
 
-</div>
+## Next Steps
 
-## ✨ Features
+1. Define your customer segments with `startup build customer-segment`
+2. Validate your assumptions
+3. Build your MVP
+4. Iterate based on feedback
 
-- **Project Initialization**: Set up a new startup project with proper structure
-- **Customer Segment Analysis**: Create detailed customer personas using AI
-
-## Usage
-
-### Initialize a New Startup Project
-
-```bash
-npx startup-gen init
-```
-
-### Build Customer Segments
-
-```bash
-npx startup-gen build customer-segment
-```
-
-## Requirements
-
-- Node.js 16+
-- OpenAI API key for customer segment generation
-
-## License
-
-MIT
+---
+*Generated with Startup CLI*
