@@ -4,6 +4,8 @@ import { execSync } from "child_process"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
+import { join } from "path"
+import Mustache from "mustache"
 
 // Template for creating new build steps
 export async function generateMarketAnalysis() {
@@ -11,30 +13,24 @@ export async function generateMarketAnalysis() {
 
   try {
     if (!(await fs.pathExists(".env"))) {
-      throw new Error(
-        'No .env file found. Please run "startup init" first to set up your project.',
-      )
+      throw new Error('No .env file found. Please run "startup init" first to set up your project.')
     }
 
     console.log("📊 Let's analyze your market opportunity!")
-    console.log(
-      "We'll create a comprehensive market analysis to guide your strategy.\n",
-    )
+    console.log("We'll create a comprehensive market analysis to guide your strategy.\n")
 
     const answers = await inquirer.prompt([
       {
         type: "input",
         name: "productDescription",
         message: "Describe your product or service:",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please provide a product description",
+        validate: (input: string) => input.trim().length > 0 || "Please provide a product description",
       },
       {
         type: "input",
         name: "targetMarket",
         message: "What market or industry are you targeting?",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please specify your target market",
+        validate: (input: string) => input.trim().length > 0 || "Please specify your target market",
       },
       {
         type: "input",
@@ -49,11 +45,7 @@ export async function generateMarketAnalysis() {
     console.log("\n🤖 Generating market analysis...")
 
     // TODO: Implement market analysis generation
-    const analysis = await generateAnalysis(
-      productDescription,
-      targetMarket,
-      additionalContext,
-    )
+    const analysis = await generateAnalysis(productDescription, targetMarket, additionalContext)
 
     const fileName = `market-analysis-${Date.now()}.md`
 
@@ -77,34 +69,16 @@ async function generateAnalysis(
 ): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
-    throw new Error(
-      'OpenAI API key not found. Please run "startup init" first.',
-    )
+    throw new Error('OpenAI API key not found. Please run "startup init" first.')
   }
 
-  const prompt = `Create a comprehensive market analysis for a startup, based on the following context:
+  const promptTemplate = await fs.readFile(join(process.cwd(), "prompts", "market-analysis.txt"), "utf-8")
 
-**Product/Service:** ${productDescription}
-**Target Market:** ${targetMarket}
-${additionalContext ? `**Additional Context:** ${additionalContext}` : ""}
-
-### The analysis must include the following sections:
-
-1. **Market Size & Opportunity**: Total Addressable Market (TAM), Serviceable Addressable Market (SAM), and Serviceable Obtainable Market (SOM)
-2. **Market Trends**: Key trends driving market growth or change
-3. **Competitive Landscape**: Direct and indirect competitors, competitive advantages
-4. **Customer Segments**: Different customer types and their characteristics
-5. **Market Barriers**: Entry barriers, regulatory considerations
-6. **Growth Drivers**: Factors that will drive market growth
-7. **Risk Factors**: Potential market risks and challenges
-8. **Market Positioning**: Where your product fits in the market
-9. **Go-to-Market Implications**: How market analysis affects your strategy
-
-### Requirements:
-- Use specific data and examples where possible
-- Focus on actionable insights
-- Format as a clean, structured Markdown document
-- Be realistic about market challenges and opportunities`
+  const prompt = Mustache.render(promptTemplate, {
+    productDescription,
+    targetMarket,
+    additionalContext,
+  })
 
   const { text } = await generateText({
     model: openai("gpt-3.5-turbo"),
@@ -116,11 +90,7 @@ ${additionalContext ? `**Additional Context:** ${additionalContext}` : ""}
   return text || "Error generating analysis"
 }
 
-async function commitAnalysisFile(
-  fileName: string,
-  productDescription: string,
-  targetMarket: string,
-) {
+async function commitAnalysisFile(fileName: string, productDescription: string, targetMarket: string) {
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 

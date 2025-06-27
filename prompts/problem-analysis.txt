@@ -2,7 +2,7 @@ Create a comprehensive problem analysis for a startup, identifying and prioritiz
 
 **Personas:** {{personas}}
 **Initial Problems Identified:** {{initialProblems}}
-{{additionalContext}}
+{{#additionalContext}}**Additional Context:** {{additionalContext}}{{/additionalContext}}
 
 ### The analysis must include the following sections:
 

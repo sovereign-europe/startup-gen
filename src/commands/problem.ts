@@ -5,6 +5,7 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
 import { join } from "path"
+import Mustache from "mustache"
 
 export async function generateProblemAnalysis() {
   dotenv.config()
@@ -93,10 +94,11 @@ async function generateProblemAnalysisContent(
 
   const promptTemplate = await fs.readFile(join(process.cwd(), "prompts", "problem-analysis.txt"), "utf-8")
 
-  const prompt = promptTemplate
-    .replace("{{personas}}", personas)
-    .replace("{{initialProblems}}", initialProblems)
-    .replace("{{additionalContext}}", additionalContext ? `**Additional Context:** ${additionalContext}` : "")
+  const prompt = Mustache.render(promptTemplate, {
+    personas,
+    initialProblems,
+    additionalContext,
+  })
 
   const { text } = await generateText({
     model: openai("gpt-3.5-turbo"),

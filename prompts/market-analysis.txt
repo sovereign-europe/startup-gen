@@ -1,0 +1,23 @@
+Create a comprehensive market analysis for a startup, based on the following context:
+
+**Product/Service:** {{productDescription}}
+**Target Market:** {{targetMarket}}
+{{#additionalContext}}**Additional Context:** {{additionalContext}}{{/additionalContext}}
+
+### The analysis must include the following sections:
+
+1. **Market Size & Opportunity**: Total Addressable Market (TAM), Serviceable Addressable Market (SAM), and Serviceable Obtainable Market (SOM)
+2. **Market Trends**: Key trends driving market growth or change
+3. **Competitive Landscape**: Direct and indirect competitors, competitive advantages
+4. **Customer Segments**: Different customer types and their characteristics
+5. **Market Barriers**: Entry barriers, regulatory considerations
+6. **Growth Drivers**: Factors that will drive market growth
+7. **Risk Factors**: Potential market risks and challenges
+8. **Market Positioning**: Where your product fits in the market
+9. **Go-to-Market Implications**: How market analysis affects your strategy
+
+### Requirements:
+- Use specific data and examples where possible
+- Focus on actionable insights
+- Format as a clean, structured Markdown document
+- Be realistic about market challenges and opportunities 

@@ -5,29 +5,25 @@ import { join } from "path"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
+import Mustache from "mustache"
 
 export async function generateCustomerSegment() {
   dotenv.config()
 
   try {
     if (!(await fs.pathExists(".env"))) {
-      throw new Error(
-        'No .env file found. Please run "startup init" first to set up your project.',
-      )
+      throw new Error('No .env file found. Please run "startup init" first to set up your project.')
     }
 
     console.log("🎯 Let's build your customer segment!")
-    console.log(
-      "We'll create a detailed persona to help guide your startup decisions.\n",
-    )
+    console.log("We'll create a detailed persona to help guide your startup decisions.\n")
 
     const answers = await inquirer.prompt([
       {
         type: "input",
         name: "highLevelDefinition",
         message: "Provide a high-level definition of your target customer:",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please provide a customer definition",
+        validate: (input: string) => input.trim().length > 0 || "Please provide a customer definition",
       },
       {
         type: "input",
@@ -41,10 +37,7 @@ export async function generateCustomerSegment() {
 
     console.log("\n🤖 Generating detailed customer persona...")
 
-    const persona = await generatePersona(
-      highLevelDefinition,
-      additionalRefinement,
-    )
+    const persona = await generatePersona(highLevelDefinition, additionalRefinement)
     const personaName = extractPersonaName(persona)
     const folderName = "1_segments"
     await fs.ensureDir(folderName)
@@ -77,30 +70,20 @@ export async function generateCustomerSegment() {
   }
 }
 
-async function generatePersona(
-  highLevelDefinition: string,
-  additionalRefinement: string,
-): Promise<string> {
+async function generatePersona(highLevelDefinition: string, additionalRefinement: string): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
-    throw new Error(
-      'OpenAI API key not found. Please run "startup init" first.',
-    )
+    throw new Error('OpenAI API key not found. Please run "startup init" first.')
   }
 
-  const promptTemplate = await fs.readFile(
-    join(process.cwd(), "prompts", "customer-persona.txt"),
-    "utf-8",
-  )
+  const promptTemplate = await fs.readFile(join(process.cwd(), "prompts", "customer-persona.txt"), "utf-8")
 
-  const prompt = promptTemplate
-    .replace("{{highLevelDefinition}}", highLevelDefinition)
-    .replace(
-      "{{additionalRefinement}}",
-      additionalRefinement
-        ? `**Additional nuance or product context:** ${additionalRefinement}`
-        : "",
-    )
+  const prompt = Mustache.render(promptTemplate, {
+    highLevelDefinition,
+    additionalRefinement: additionalRefinement
+      ? `**Additional nuance or product context:** ${additionalRefinement}`
+      : "",
+  })
 
   const { text } = await generateText({
     model: openai("gpt-3.5-turbo"),
@@ -113,16 +96,12 @@ async function generatePersona(
 }
 
 function extractPersonaName(persona: string): string {
-  const nameMatch = persona.match(
-    /(?:Name|Persona Name|Meet)\s*:?\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i,
-  )
+  const nameMatch = persona.match(/(?:Name|Persona Name|Meet)\s*:?\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i)
   if (nameMatch) {
     return nameMatch[1]
   }
 
-  const firstLineMatch = persona
-    .split("\n")[0]
-    .match(/([A-Z][a-z]+\s+[A-Z][a-z]+)/)
+  const firstLineMatch = persona.split("\n")[0].match(/([A-Z][a-z]+\s+[A-Z][a-z]+)/)
   if (firstLineMatch) {
     return firstLineMatch[1]
   }
@@ -130,11 +109,7 @@ function extractPersonaName(persona: string): string {
   return "Customer-Persona"
 }
 
-async function commitPersonaFile(
-  fileName: string,
-  highLevelDefinition: string,
-  additionalRefinement: string,
-) {
+async function commitPersonaFile(fileName: string, highLevelDefinition: string, additionalRefinement: string) {
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 
