@@ -5,6 +5,7 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
 import { customerPersonaPrompt, problemInterviewPrompt } from "../prompts"
+import Mustache from "mustache"
 
 export async function generateCustomerSegment() {
   dotenv.config()
@@ -88,12 +89,12 @@ async function generatePersona(highLevelDefinition: string, additionalRefinement
     throw new Error('OpenAI API key not found. Please run "startup init" first.')
   }
 
-  const prompt = customerPersonaPrompt
-    .replace("{{highLevelDefinition}}", highLevelDefinition)
-    .replace(
-      "{{additionalRefinement}}",
-      additionalRefinement ? `**Additional nuance or product context:** ${additionalRefinement}` : "",
-    )
+  const prompt = Mustache.render(customerPersonaPrompt, {
+    highLevelDefinition,
+    additionalRefinement: additionalRefinement
+      ? `**Additional nuance or product context:** ${additionalRefinement}`
+      : "",
+  })
 
   const { text } = await generateText({
     model: openai("gpt-3.5-turbo"),

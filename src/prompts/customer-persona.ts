@@ -1,7 +1,7 @@
 export const customerPersonaPrompt = `Create a detailed and highly realistic customer persona for a lean startup, based on the following context:
 
 **High-level customer definition:** {{highLevelDefinition}}
-{{additionalRefinement}}
+{{#additionalRefinement}}{{additionalRefinement}}{{/additionalRefinement}}
 
 Your output must describe one believable individual—not a generalized user type. Write with vivid specificity.
 
