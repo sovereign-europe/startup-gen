@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/sovereign-europe/startup-gen/compare/v1.0.1...v1.1.0) (2025-06-27)
+
+
+### Features
+
+* make auto-commit configurable ([fbc11c2](https://github.com/sovereign-europe/startup-gen/commit/fbc11c2d49fa805a720bc8c42838fec06015a958))
+* make auto-commit configurable ([0856131](https://github.com/sovereign-europe/startup-gen/commit/08561310283dabac5fa235bc7a415778f4714067))
+
 ## [1.0.1](https://github.com/sovereign-europe/startup-gen/compare/v1.0.0...v1.0.1) (2025-06-27)
 
 
