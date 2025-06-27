@@ -1,0 +1,36 @@
+Create a comprehensive problem analysis for a startup, identifying and prioritizing the top 3 problems that need to be solved. Based on the following context:
+
+**Personas:** {{personas}}
+**Initial Problems Identified:** {{initialProblems}}
+{{additionalContext}}
+
+### The analysis must include the following sections:
+
+1. **Problem Overview**: A brief summary of the problem space and why it matters
+2. **Top 3 Problems (Prioritized)**:
+   - **Problem #1**: [Most Critical Problem]
+     - Description and impact
+     - Why it's the highest priority
+     - Evidence of the problem's severity
+   - **Problem #2**: [Second Most Critical Problem]
+     - Description and impact
+     - Why it's the second priority
+     - Evidence of the problem's severity
+   - **Problem #3**: [Third Most Critical Problem]
+     - Description and impact
+     - Why it's the third priority
+     - Evidence of the problem's severity
+
+3. **Problem Validation**: How to validate these problems with real customers
+4. **Problem-Solution Fit**: How your product addresses each problem
+5. **Competitive Analysis**: How existing solutions fail to solve these problems
+6. **Market Opportunity**: The size and urgency of solving these problems
+7. **Next Steps**: Recommended actions to validate and prioritize these problems
+
+### Requirements:
+- Focus on problems that are painful, frequent, and urgent
+- Include specific examples and evidence where possible
+- Prioritize based on customer impact and business opportunity
+- Format as a clean, structured Markdown document
+- Make each problem actionable and measurable
+- Consider both emotional and practical aspects of each problem 
