@@ -9,12 +9,12 @@ export default defineConfig({
       fileName: 'index'
     },
     rollupOptions: {
-      external: ['fs', 'path', 'child_process', 'os', 'inquirer', 'commander', 'openai', 'fs-extra', 'dotenv']
+      external: ['fs', 'path', 'child_process', 'os', 'inquirer', 'commander', 'openai', 'fs-extra', 'dotenv'],
+      output: {
+        interop: 'auto'
+      }
     },
     target: 'node16',
     outDir: 'dist'
   },
-  test: {
-    environment: 'node'
-  }
 });
