@@ -21,22 +21,42 @@ export async function generateProblemAnalysis() {
     console.log(
       "We'll analyze the most critical problems and prioritize them for your solution.\n",
     )
+    console.log("Let's take a look into the customer persona.\n")
+
+    let customerSegments: string[] = []
+
+    //find customer persona
+    try {
+      customerSegments = await fs.readdir("./1_segments")
+      console.log("customerSegments", customerSegments)
+    } catch (error) {
+      console.log("error", error)
+      console.error(
+        "❌ Folder 1_segments not found. Did you run the customer-segment command?",
+      )
+      process.exit(1)
+    }
+
+    //find the file that contains the customer persona
+    const customerPersona = customerSegments.find((file) =>
+      file.endsWith(".md"),
+    )
+    console.log("customerPersona", customerPersona)
+
+    //read all persona files
+    let personas: string = ""
+    for (const persona of customerSegments) {
+      const personaContent = await fs.readFile(
+        `./1_segments/${persona}`,
+        "utf8",
+      )
+      console.log("personaContent", personaContent)
+      personas += personaContent
+    }
+
+    console.log("personas", personas)
 
     const answers = await inquirer.prompt([
-      {
-        type: "input",
-        name: "productIdea",
-        message: "What product or service are you building?",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please describe your product idea",
-      },
-      {
-        type: "input",
-        name: "targetCustomer",
-        message: "Who is your target customer?",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please describe your target customer",
-      },
       {
         type: "input",
         name: "initialProblems",
@@ -54,24 +74,22 @@ export async function generateProblemAnalysis() {
       },
     ])
 
-    const { productIdea, targetCustomer, initialProblems, additionalContext } =
-      answers
+    const { initialProblems, additionalContext } = answers
 
     console.log("\n🤖 Analyzing and prioritizing problems...")
 
     const problemAnalysis = await generateProblemAnalysisContent(
-      productIdea,
-      targetCustomer,
+      personas,
       initialProblems,
       additionalContext,
     )
 
-    const fileName = `problem-analysis-${Date.now()}.md`
+    const fileName = `2_problems/problem-analysis-${Date.now()}.md`
 
     await fs.writeFile(fileName, problemAnalysis)
     console.log(`📄 Created ${fileName}`)
 
-    await commitProblemFile(fileName, productIdea, targetCustomer)
+    await commitProblemFile(fileName)
 
     console.log("\n✅ Problem analysis created successfully!")
     console.log(
@@ -84,8 +102,7 @@ export async function generateProblemAnalysis() {
 }
 
 async function generateProblemAnalysisContent(
-  productIdea: string,
-  targetCustomer: string,
+  personas: string,
   initialProblems: string,
   additionalContext: string,
 ): Promise<string> {
@@ -98,8 +115,7 @@ async function generateProblemAnalysisContent(
 
   const prompt = `Create a comprehensive problem analysis for a startup, identifying and prioritizing the top 3 problems that need to be solved. Based on the following context:
 
-**Product/Service:** ${productIdea}
-**Target Customer:** ${targetCustomer}
+**Personas:** ${personas}
 **Initial Problems Identified:** ${initialProblems}
 ${additionalContext ? `**Additional Context:** ${additionalContext}` : ""}
 
@@ -144,15 +160,11 @@ ${additionalContext ? `**Additional Context:** ${additionalContext}` : ""}
   return text || "Error generating problem analysis"
 }
 
-async function commitProblemFile(
-  fileName: string,
-  productIdea: string,
-  targetCustomer: string,
-) {
+async function commitProblemFile(fileName: string) {
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 
-    const commitMessage = `Add problem analysis: ${productIdea} - ${targetCustomer}`
+    const commitMessage = `Add problem analysis`
 
     execSync(`git commit -m "${commitMessage}"`, { stdio: "ignore" })
     console.log("💾 Committed problem analysis file")
