@@ -1,6 +1,6 @@
 {
-  "name": "startup-cli",
-  "version": "1.0.0",
+  "name": "startup-gen",
+  "version": "0.1.0",
   "description": "A CLI tool for early-stage startups to build lean startup methodology",
   "main": "dist/index.js",
   "bin": {
