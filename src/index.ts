@@ -10,15 +10,9 @@ const program = new Command()
 
 program
   .name("startup")
-  .description(
-    "CLI tool for early-stage startups to build lean startup methodology",
-  )
+  .description("CLI tool for early-stage startups to build lean startup methodology")
   .version("1.0.0")
-  .option(
-    "-d, --directory <dir>",
-    "specify the directory to work in",
-    process.cwd(),
-  )
+  .option("-d, --directory <dir>", "specify the directory to work in", process.cwd())
 
 program
   .command("init")
@@ -42,10 +36,7 @@ program
         process.chdir(originalCwd)
       }
     } catch (error) {
-      console.error(
-        "❌ Error:",
-        error instanceof Error ? error.message : "Unknown error",
-      )
+      console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
       process.exit(1)
     }
   })
@@ -53,7 +44,8 @@ program
 program
   .command("build")
   .description("Build startup components")
-  .action(async () => {
+  .argument("[buildStep]", "specific build step to execute (e.g., problem-analysis, customer-segment)")
+  .action(async (buildStep) => {
     try {
       const options = program.opts()
       const targetDir = path.resolve(options.directory)
@@ -66,16 +58,13 @@ program
       process.chdir(targetDir)
 
       try {
-        await buildCommand.run()
+        await buildCommand.run(buildStep)
       } finally {
         // Restore original working directory
         process.chdir(originalCwd)
       }
     } catch (error) {
-      console.error(
-        "❌ Error:",
-        error instanceof Error ? error.message : "Unknown error",
-      )
+      console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
       process.exit(1)
     }
   })
