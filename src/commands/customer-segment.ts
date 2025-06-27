@@ -59,6 +59,20 @@ export async function generateCustomerSegment() {
 
 		console.log("\n✅ Customer segment created successfully!")
 		console.log(`📖 Check out ${fileName} for your detailed persona.`)
+
+		const runCustomerSegment = await inquirer.prompt([
+			{
+				type: "confirm",
+				name: "proceed",
+				message: "Would you like to run the problem-analysis command now?",
+				default: true,
+			},
+		])
+
+		if (runCustomerSegment.proceed) {
+			const { generateProblemAnalysis } = await import("./problem")
+			await generateProblemAnalysis()
+		}
 	} catch (error) {
 		console.error("Error creating customer segment:", error)
 		process.exit(1)
