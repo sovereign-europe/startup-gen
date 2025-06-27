@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/sovereign-europe/startup-gen/compare/v1.0.0...v1.0.1) (2025-06-27)
+
+
+### Reverts
+
+* Revert "Initial commit: Setup Unicorn4 with Startup CLI" ([6d125fe](https://github.com/sovereign-europe/startup-gen/commit/6d125fe3566fd78e177f05d609fc10759fc9dec9))
+
 # 1.0.0 (2025-06-27)
 
 
