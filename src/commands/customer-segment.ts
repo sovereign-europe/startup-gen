@@ -46,7 +46,9 @@ export async function generateCustomerSegment() {
 			additionalRefinement,
 		)
 		const personaName = extractPersonaName(persona)
-		const fileName = `customer-segment-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
+		const folderName = "1_segments"
+		await fs.ensureDir(folderName)
+		const fileName = `${folderName}/customer-segment-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
 
 		await fs.writeFile(fileName, persona)
 		console.log(`📄 Created ${fileName}`)
