@@ -86,6 +86,7 @@ export async function generateProblemAnalysis() {
 
     const fileName = `2_problems/problem-analysis-${Date.now()}.md`
 
+    await fs.ensureDir("2_problems")
     await fs.writeFile(fileName, problemAnalysis)
     console.log(`📄 Created ${fileName}`)
 
