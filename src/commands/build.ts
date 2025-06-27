@@ -4,10 +4,10 @@ import { execSync } from "child_process"
 import OpenAI from "openai"
 import * as dotenv from "dotenv"
 
-dotenv.config()
-
 export const buildCommand = {
   async customerSegment() {
+    dotenv.config()
+
     try {
       if (!(await fs.pathExists(".env"))) {
         throw new Error(
@@ -76,6 +76,8 @@ async function generatePersona(
       'OpenAI API key not found. Please run "startup init" first.',
     )
   }
+
+  console.log("apiKey", apiKey)
 
   const openai = new OpenAI({ apiKey })
 
