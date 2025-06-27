@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import fs from "fs-extra"
 import { execSync } from "child_process"
 import inquirer from "inquirer"
-import { initCommand } from "../init"
+import { initCommand } from "./init"
 
 vi.mock("fs-extra")
 vi.mock("child_process")
