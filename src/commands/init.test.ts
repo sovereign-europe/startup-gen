@@ -33,18 +33,9 @@ describe("init command", () => {
 
     await initCommand()
 
-    expect(mockFs.writeFile).toHaveBeenCalledWith(
-      "README.md",
-      expect.stringContaining("# Test Startup"),
-    )
-    expect(mockFs.writeFile).toHaveBeenCalledWith(
-      ".env",
-      "OPENAI_API_KEY=test-api-key\n",
-    )
-    expect(mockFs.writeFile).toHaveBeenCalledWith(
-      ".gitignore",
-      expect.stringContaining("node_modules/"),
-    )
+    expect(mockFs.writeFile).toHaveBeenCalledWith("README.md", expect.stringContaining("# Test Startup"))
+    expect(mockFs.writeFile).toHaveBeenCalledWith(".env", "OPENAI_API_KEY=test-api-key\n")
+    expect(mockFs.writeFile).toHaveBeenCalledWith(".gitignore", expect.stringContaining("node_modules/"))
   })
 
   it("should initialize git repository", async () => {
@@ -63,9 +54,8 @@ describe("init command", () => {
     expect(mockExecSync).toHaveBeenCalledWith("git add README.md .gitignore", {
       stdio: "ignore",
     })
-    expect(mockExecSync).toHaveBeenCalledWith(
-      'git commit -m "Initial commit: Setup Test Startup with Startup CLI"',
-      { stdio: "ignore" },
-    )
+    expect(mockExecSync).toHaveBeenCalledWith('git commit -m "Initial commit: Setup Test Startup with Startup CLI"', {
+      stdio: "ignore",
+    })
   })
 })

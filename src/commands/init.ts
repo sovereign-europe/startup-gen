@@ -12,15 +12,13 @@ export async function initCommand() {
         type: "input",
         name: "startupName",
         message: "What is your startup name?",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Startup name cannot be empty",
+        validate: (input: string) => input.trim().length > 0 || "Startup name cannot be empty",
       },
       {
         type: "password",
         name: "openaiApiKey",
         message: "Enter your OpenAI API key:",
-        validate: (input: string) =>
-          input.trim().length > 0 || "API key cannot be empty",
+        validate: (input: string) => input.trim().length > 0 || "API key cannot be empty",
       },
     ])
 
@@ -132,10 +130,7 @@ async function initializeGitRepo() {
 async function commitInitialFiles(startupName: string) {
   try {
     execSync("git add README.md .gitignore", { stdio: "ignore" })
-    execSync(
-      `git commit -m "Initial commit: Setup ${startupName} with Startup CLI"`,
-      { stdio: "ignore" },
-    )
+    execSync(`git commit -m "Initial commit: Setup ${startupName} with Startup CLI"`, { stdio: "ignore" })
     console.log("💾 Committed initial files")
   } catch {
     console.log("⚠️  Could not commit files (git may not be configured)")
