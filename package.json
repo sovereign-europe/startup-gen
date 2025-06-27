@@ -8,7 +8,7 @@
   },
   "scripts": {
     "prepare": "npm run build && husky",
-    "build": "vite build && cp -r prompts dist/",
+    "build": "vite build",
     "dev": "vite build --watch",
     "test": "vitest",
     "test:watch": "vitest --watch",

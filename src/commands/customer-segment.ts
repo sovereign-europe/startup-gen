@@ -1,33 +1,28 @@
 import inquirer from "inquirer"
 import fs from "fs-extra"
 import { execSync } from "child_process"
-import { join } from "path"
 import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
+import { customerPersonaPrompt, problemInterviewPrompt } from "../prompts"
 
 export async function generateCustomerSegment() {
   dotenv.config()
 
   try {
     if (!(await fs.pathExists(".env"))) {
-      throw new Error(
-        'No .env file found. Please run "startup init" first to set up your project.',
-      )
+      throw new Error('No .env file found. Please run "startup init" first to set up your project.')
     }
 
     console.log("🎯 Let's build your customer segment!")
-    console.log(
-      "We'll create a detailed persona to help guide your startup decisions.\n",
-    )
+    console.log("We'll create a detailed persona to help guide your startup decisions.\n")
 
     const answers = await inquirer.prompt([
       {
         type: "input",
         name: "highLevelDefinition",
         message: "Provide a high-level definition of your target customer:",
-        validate: (input: string) =>
-          input.trim().length > 0 || "Please provide a customer definition",
+        validate: (input: string) => input.trim().length > 0 || "Please provide a customer definition",
       },
       {
         type: "input",
@@ -41,10 +36,7 @@ export async function generateCustomerSegment() {
 
     console.log("\n🤖 Generating detailed customer persona...")
 
-    const persona = await generatePersona(
-      highLevelDefinition,
-      additionalRefinement,
-    )
+    const persona = await generatePersona(highLevelDefinition, additionalRefinement)
     const personaName = extractPersonaName(persona)
     const folderName = "1_segments"
     await fs.ensureDir(folderName)
@@ -58,7 +50,20 @@ export async function generateCustomerSegment() {
     console.log("\n✅ Customer segment created successfully!")
     console.log(`📖 Check out ${fileName} for your detailed persona.`)
 
-    const runCustomerSegment = await inquirer.prompt([
+    const generateInterview = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "proceed",
+        message: "Would you like to generate a problem interview script to validate this persona?",
+        default: true,
+      },
+    ])
+
+    if (generateInterview.proceed) {
+      await generateProblemInterview(persona, highLevelDefinition, additionalRefinement, personaName)
+    }
+
+    const runProblemAnalysis = await inquirer.prompt([
       {
         type: "confirm",
         name: "proceed",
@@ -67,7 +72,7 @@ export async function generateCustomerSegment() {
       },
     ])
 
-    if (runCustomerSegment.proceed) {
+    if (runProblemAnalysis.proceed) {
       const { generateProblemAnalysis } = await import("./problem")
       await generateProblemAnalysis()
     }
@@ -77,29 +82,17 @@ export async function generateCustomerSegment() {
   }
 }
 
-async function generatePersona(
-  highLevelDefinition: string,
-  additionalRefinement: string,
-): Promise<string> {
+async function generatePersona(highLevelDefinition: string, additionalRefinement: string): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
-    throw new Error(
-      'OpenAI API key not found. Please run "startup init" first.',
-    )
+    throw new Error('OpenAI API key not found. Please run "startup init" first.')
   }
 
-  const promptTemplate = await fs.readFile(
-    join(process.cwd(), "prompts", "customer-persona.txt"),
-    "utf-8",
-  )
-
-  const prompt = promptTemplate
+  const prompt = customerPersonaPrompt
     .replace("{{highLevelDefinition}}", highLevelDefinition)
     .replace(
       "{{additionalRefinement}}",
-      additionalRefinement
-        ? `**Additional nuance or product context:** ${additionalRefinement}`
-        : "",
+      additionalRefinement ? `**Additional nuance or product context:** ${additionalRefinement}` : "",
     )
 
   const { text } = await generateText({
@@ -112,17 +105,64 @@ async function generatePersona(
   return text || "Error generating persona"
 }
 
+async function generateProblemInterview(
+  personaContent: string,
+  highLevelDefinition: string,
+  additionalRefinement: string,
+  personaName: string,
+): Promise<void> {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new Error('OpenAI API key not found. Please run "startup init" first.')
+  }
+
+  console.log("\n🎙️ Generating problem interview script...")
+
+  const prompt = problemInterviewPrompt
+    .replace("{{personaContent}}", personaContent)
+    .replace("{{highLevelDefinition}}", highLevelDefinition)
+    .replace(
+      "{{additionalRefinement}}",
+      additionalRefinement ? `**Additional nuance or product context:** ${additionalRefinement}` : "",
+    )
+
+  const { text } = await generateText({
+    model: openai("gpt-3.5-turbo"),
+    prompt,
+    maxTokens: 2000,
+    temperature: 0.7,
+  })
+
+  const interviewScript = text || "Error generating interview script"
+  const folderName = "1_segments"
+  const fileName = `${folderName}/problem-interview-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
+
+  await fs.writeFile(fileName, interviewScript)
+  console.log(`📄 Created ${fileName}`)
+
+  await commitInterviewFile(fileName, personaName)
+  console.log("✅ Problem interview script created successfully!")
+  console.log(`📖 Use ${fileName} to validate your persona's pain points with real customers.`)
+}
+
+async function commitInterviewFile(fileName: string, personaName: string) {
+  try {
+    execSync(`git add ${fileName}`, { stdio: "ignore" })
+    const commitMessage = `Add problem interview script for ${personaName}`
+    execSync(`git commit -m "${commitMessage}"`, { stdio: "ignore" })
+    console.log("💾 Committed problem interview script")
+  } catch {
+    console.log("⚠️  Could not commit file (git may not be configured)")
+  }
+}
+
 function extractPersonaName(persona: string): string {
-  const nameMatch = persona.match(
-    /(?:Name|Persona Name|Meet)\s*:?\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i,
-  )
+  const nameMatch = persona.match(/(?:Name|Persona Name|Meet)\s*:?\s*([A-Z][a-z]+\s+[A-Z][a-z]+)/i)
   if (nameMatch) {
     return nameMatch[1]
   }
 
-  const firstLineMatch = persona
-    .split("\n")[0]
-    .match(/([A-Z][a-z]+\s+[A-Z][a-z]+)/)
+  const firstLineMatch = persona.split("\n")[0].match(/([A-Z][a-z]+\s+[A-Z][a-z]+)/)
   if (firstLineMatch) {
     return firstLineMatch[1]
   }
@@ -130,11 +170,7 @@ function extractPersonaName(persona: string): string {
   return "Customer-Persona"
 }
 
-async function commitPersonaFile(
-  fileName: string,
-  highLevelDefinition: string,
-  additionalRefinement: string,
-) {
+async function commitPersonaFile(fileName: string, highLevelDefinition: string, additionalRefinement: string) {
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 
