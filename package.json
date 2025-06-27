@@ -7,13 +7,17 @@
     "startup": "./dist/index.js"
   },
   "scripts": {
+    "prepare": "npm run build && husky",
     "build": "vite build",
     "dev": "vite build --watch",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "semantic-release": "semantic-release",
+    "format": "prettier --write src/.",
+    "format:check": "prettier --check src/."
   },
   "keywords": [
     "cli",
@@ -30,14 +34,30 @@
     "openai": "^5.8.1"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.3",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.8",
     "@types/node": "^24.0.4",
     "@typescript-eslint/eslint-plugin": "^8.35.0",
     "@typescript-eslint/parser": "^8.35.0",
+    "@eslint/js": "^9.29.0",
     "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "3.6.2",
+    "semantic-release": "^24.2.5",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.0",
     "vite": "^7.0.0",
     "vitest": "^3.2.4"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
