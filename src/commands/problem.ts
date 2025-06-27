@@ -7,6 +7,7 @@ import * as dotenv from "dotenv"
 import { join } from "path"
 import { shouldAutoCommit } from "../utils/config"
 import Mustache from "mustache"
+import { FOLDER_NAME_SEGMENTS } from "../config"
 
 export async function generateProblemAnalysis() {
   dotenv.config()
@@ -24,11 +25,11 @@ export async function generateProblemAnalysis() {
 
     //find customer persona
     try {
-      customerSegments = await fs.readdir("./1_segments")
+      customerSegments = await fs.readdir(FOLDER_NAME_SEGMENTS)
       console.log("customerSegments", customerSegments)
     } catch (error) {
       console.log("error", error)
-      console.error("❌ Folder 1_segments not found. Did you run the customer-segment command?")
+      console.error(`❌ Folder ${FOLDER_NAME_SEGMENTS} not found. Did you run the customer-segment command?`)
       process.exit(1)
     }
 
@@ -39,7 +40,7 @@ export async function generateProblemAnalysis() {
     //read all persona files
     let personas: string = ""
     for (const persona of customerSegments) {
-      const personaContent = await fs.readFile(`./1_segments/${persona}`, "utf8")
+      const personaContent = await fs.readFile(`./${FOLDER_NAME_SEGMENTS}/${persona}`, "utf8")
       console.log("personaContent", personaContent)
       personas += personaContent
     }

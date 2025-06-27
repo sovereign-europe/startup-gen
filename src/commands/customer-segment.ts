@@ -7,6 +7,7 @@ import * as dotenv from "dotenv"
 import { customerPersonaPrompt, problemInterviewPrompt } from "../prompts"
 import { shouldAutoCommit } from "../utils/config"
 import Mustache from "mustache"
+import { FOLDER_NAME_SEGMENTS } from "../config"
 
 export async function generateCustomerSegment() {
   dotenv.config()
@@ -40,9 +41,9 @@ export async function generateCustomerSegment() {
 
     const persona = await generatePersona(highLevelDefinition, additionalRefinement)
     const personaName = extractPersonaName(persona)
-    const folderName = "1_segments"
-    await fs.ensureDir(folderName)
-    const fileName = `${folderName}/customer-segment-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
+
+    await fs.ensureDir(FOLDER_NAME_SEGMENTS)
+    const fileName = `${FOLDER_NAME_SEGMENTS}/customer-segment-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
 
     await fs.writeFile(fileName, persona)
     console.log(`📄 Created ${fileName}`)
@@ -136,8 +137,8 @@ async function generateProblemInterview(
   })
 
   const interviewScript = text || "Error generating interview script"
-  const folderName = "1_segments"
-  const fileName = `${folderName}/problem-interview-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
+
+  const fileName = `${FOLDER_NAME_SEGMENTS}/problem-interview-${personaName.toLowerCase().replace(/\s+/g, "-")}.md`
 
   await fs.writeFile(fileName, interviewScript)
   console.log(`📄 Created ${fileName}`)
