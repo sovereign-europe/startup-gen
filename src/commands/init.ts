@@ -2,6 +2,8 @@ import inquirer from "inquirer"
 import fs from "fs-extra"
 import { execSync } from "child_process"
 import { createConfig } from "../utils/config"
+import { createReadme } from "./init/createReadme"
+import { createGitIgnore } from "./init/createGitIgnore"
 
 export async function initCommand() {
   try {
@@ -60,71 +62,10 @@ export async function initCommand() {
   }
 }
 
-async function createReadme(startupName: string) {
-  const readmeContent = `# ${startupName}
-
-Welcome to ${startupName}! This project was initialized with Startup CLI.
-
-## Getting Started
-
-This is your lean startup project. Use the Startup CLI to build your customer segments, validate your ideas, and iterate quickly.
-
-## Next Steps
-
-1. Define your customer segments with \`startup build customer-segment\`
-2. Validate your assumptions
-3. Build your MVP
-4. Iterate based on feedback
-
----
-*Generated with Startup CLI*
-`
-
-  await fs.writeFile("README.md", readmeContent)
-  console.log("📝 Created README.md")
-}
-
 async function createEnvFile(apiKey: string) {
   const envContent = `OPENAI_API_KEY=${apiKey}\n`
   await fs.writeFile(".env", envContent)
   console.log("🔐 Created .env file")
-}
-
-async function createGitIgnore() {
-  const gitignoreContent = `# Dependencies
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Build outputs
-dist/
-build/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-logs
-*.log
-`
-
-  await fs.writeFile(".gitignore", gitignoreContent)
-  console.log("📋 Created .gitignore")
 }
 
 async function initializeGitRepo() {
