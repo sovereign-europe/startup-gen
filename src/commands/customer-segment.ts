@@ -5,6 +5,7 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
 import { customerPersonaPrompt, problemInterviewPrompt } from "../prompts"
+import { shouldAutoCommit } from "../utils/config"
 import Mustache from "mustache"
 
 export async function generateCustomerSegment() {
@@ -147,6 +148,10 @@ async function generateProblemInterview(
 }
 
 async function commitInterviewFile(fileName: string, personaName: string) {
+  if (!(await shouldAutoCommit())) {
+    return
+  }
+
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
     const commitMessage = `Add problem interview script for ${personaName}`
@@ -172,6 +177,11 @@ function extractPersonaName(persona: string): string {
 }
 
 async function commitPersonaFile(fileName: string, highLevelDefinition: string, additionalRefinement: string) {
+  if (!(await shouldAutoCommit())) {
+    console.log("💡 Auto-commit is disabled. Enable it in startup.config.json to auto-commit files.")
+    return
+  }
+
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 

@@ -5,6 +5,7 @@ import { generateText } from "ai"
 import { openai } from "@ai-sdk/openai"
 import * as dotenv from "dotenv"
 import { join } from "path"
+import { shouldAutoCommit } from "../utils/config"
 import Mustache from "mustache"
 
 // Template for creating new build steps
@@ -91,6 +92,11 @@ async function generateAnalysis(
 }
 
 async function commitAnalysisFile(fileName: string, productDescription: string, targetMarket: string) {
+  if (!(await shouldAutoCommit())) {
+    console.log("💡 Auto-commit is disabled. Enable it in startup.config.json to auto-commit files.")
+    return
+  }
+
   try {
     execSync(`git add ${fileName}`, { stdio: "ignore" })
 

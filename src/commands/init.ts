@@ -1,6 +1,7 @@
 import inquirer from "inquirer"
 import fs from "fs-extra"
 import { execSync } from "child_process"
+import { createConfig } from "../utils/config"
 
 export async function initCommand() {
   try {
@@ -20,17 +21,25 @@ export async function initCommand() {
         message: "Enter your OpenAI API key:",
         validate: (input: string) => input.trim().length > 0 || "API key cannot be empty",
       },
+      {
+        type: "confirm",
+        name: "autoCommit",
+        message: "Enable auto-commit? (automatically commit generated files to git)",
+        default: false,
+      },
     ])
 
-    const { startupName, openaiApiKey } = answers
+    const { startupName, openaiApiKey, autoCommit } = answers
 
     await createReadme(startupName)
     await createEnvFile(openaiApiKey)
     await createGitIgnore()
+    await createConfig({ autoCommit })
     await initializeGitRepo()
     await commitInitialFiles(startupName)
 
     console.log("\n✅ Project initialized successfully!")
+    console.log(`⚙️  Auto-commit is ${autoCommit ? "enabled" : "disabled"} (can be changed in startup.config.json)`)
 
     const runCustomerSegment = await inquirer.prompt([
       {
@@ -129,7 +138,7 @@ async function initializeGitRepo() {
 
 async function commitInitialFiles(startupName: string) {
   try {
-    execSync("git add README.md .gitignore", { stdio: "ignore" })
+    execSync("git add README.md .gitignore startup.config.json", { stdio: "ignore" })
     execSync(`git commit -m "Initial commit: Setup ${startupName} with Startup CLI"`, { stdio: "ignore" })
     console.log("💾 Committed initial files")
   } catch {
