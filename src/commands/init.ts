@@ -44,8 +44,8 @@ export async function initCommand() {
     ])
 
     if (runCustomerSegment.proceed) {
-      const { buildCommand } = await import("./build")
-      await buildCommand.customerSegment()
+      const { generateCustomerSegment } = await import("./customer-segment")
+      await generateCustomerSegment()
     }
   } catch (error) {
     console.error("Error during initialization:", error)

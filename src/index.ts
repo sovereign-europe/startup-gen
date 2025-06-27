@@ -27,14 +27,14 @@ program
     try {
       const options = program.opts()
       const targetDir = path.resolve(options.directory)
-      
+
       // Ensure directory exists
       await fs.ensureDir(targetDir)
-      
+
       // Change to target directory
       const originalCwd = process.cwd()
       process.chdir(targetDir)
-      
+
       try {
         await initCommand()
       } finally {
@@ -50,27 +50,23 @@ program
     }
   })
 
-const buildCmd = program
+program
   .command("build")
   .description("Build startup components")
-
-buildCmd
-  .command("customer-segment")
-  .description("Create customer segment persona")
   .action(async () => {
     try {
       const options = program.opts()
       const targetDir = path.resolve(options.directory)
-      
+
       // Ensure directory exists
       await fs.ensureDir(targetDir)
-      
+
       // Change to target directory
       const originalCwd = process.cwd()
       process.chdir(targetDir)
-      
+
       try {
-        await buildCommand.customerSegment()
+        await buildCommand.run()
       } finally {
         // Restore original working directory
         process.chdir(originalCwd)
