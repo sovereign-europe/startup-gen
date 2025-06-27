@@ -1,5 +1,6 @@
 import inquirer from "inquirer"
 import { generateCustomerSegment } from "./customer-segment"
+import { generateProblemAnalysis } from "./problem"
 
 export const buildCommand = {
   async run() {
@@ -12,6 +13,10 @@ export const buildCommand = {
         name: "buildStep",
         message: "What would you like to build?",
         choices: [
+          {
+            name: "🔍 Problem Analysis - Identify top 3 problems to solve",
+            value: "problem-analysis",
+          },
           {
             name: "🎯 Customer Segment - Create detailed customer personas",
             value: "customer-segment",
@@ -41,6 +46,9 @@ export const buildCommand = {
 
   async executeBuildStep(step: string) {
     switch (step) {
+      case "problem-analysis":
+        await generateProblemAnalysis()
+        break
       case "customer-segment":
         await generateCustomerSegment()
         break
