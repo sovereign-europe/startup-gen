@@ -36,7 +36,7 @@ export async function initCommand() {
     await createGitIgnore()
     await createConfig({ autoCommit })
     await initializeGitRepo()
-    await commitInitialFiles(startupName)
+    await commitInitialFiles(startupName, autoCommit)
 
     console.log("\n✅ Project initialized successfully!")
     console.log(`⚙️  Auto-commit is ${autoCommit ? "enabled" : "disabled"} (can be changed in startup.config.json)`)
@@ -136,7 +136,12 @@ async function initializeGitRepo() {
   }
 }
 
-async function commitInitialFiles(startupName: string) {
+async function commitInitialFiles(startupName: string, autoCommit: boolean) {
+  if (!autoCommit) {
+    console.log("💡 Auto-commit is disabled. Files created but not committed to git.")
+    return
+  }
+
   try {
     execSync("git add README.md .gitignore startup.config.json", { stdio: "ignore" })
     execSync(`git commit -m "Initial commit: Setup ${startupName} with Startup CLI"`, { stdio: "ignore" })
