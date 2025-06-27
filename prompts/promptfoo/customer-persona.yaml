@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+# Learn more about building a configuration: https://promptfoo.dev/docs/configuration/guide
+
+description: "My eval"
+
+prompts:
+  - file://../customer-persona.txt
+  
+
+providers:
+  - "openai:gpt-4o-mini"
+  - "openai:gpt-4o"
+  
+
+tests:
+  - vars:
+      highLevelDefinition: A technically interested podcast listener
+      additionalRefinement: ""
