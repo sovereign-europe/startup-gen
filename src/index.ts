@@ -3,6 +3,8 @@
 import { Command } from "commander"
 import { initCommand } from "./commands/init"
 import { buildCommand } from "./commands/build"
+import path from "path"
+import fs from "fs-extra"
 
 const program = new Command()
 
@@ -12,13 +14,33 @@ program
     "CLI tool for early-stage startups to build lean startup methodology",
   )
   .version("1.0.0")
+  .option(
+    "-d, --directory <dir>",
+    "specify the directory to work in",
+    process.cwd(),
+  )
 
 program
   .command("init")
   .description("Initialize a new startup project")
   .action(async () => {
     try {
-      await initCommand()
+      const options = program.opts()
+      const targetDir = path.resolve(options.directory)
+      
+      // Ensure directory exists
+      await fs.ensureDir(targetDir)
+      
+      // Change to target directory
+      const originalCwd = process.cwd()
+      process.chdir(targetDir)
+      
+      try {
+        await initCommand()
+      } finally {
+        // Restore original working directory
+        process.chdir(originalCwd)
+      }
     } catch (error) {
       console.error(
         "❌ Error:",
@@ -37,7 +59,22 @@ buildCmd
   .description("Create customer segment persona")
   .action(async () => {
     try {
-      await buildCommand.customerSegment()
+      const options = program.opts()
+      const targetDir = path.resolve(options.directory)
+      
+      // Ensure directory exists
+      await fs.ensureDir(targetDir)
+      
+      // Change to target directory
+      const originalCwd = process.cwd()
+      process.chdir(targetDir)
+      
+      try {
+        await buildCommand.customerSegment()
+      } finally {
+        // Restore original working directory
+        process.chdir(originalCwd)
+      }
     } catch (error) {
       console.error(
         "❌ Error:",
