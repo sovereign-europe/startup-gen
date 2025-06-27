@@ -124,7 +124,7 @@ async function initializeGitRepo() {
   try {
     execSync("git init", { stdio: "ignore" })
     console.log("📦 Initialized git repository")
-  } catch (error) {
+  } catch {
     console.log("⚠️  Git repository already exists or git not available")
   }
 }
@@ -137,7 +137,7 @@ async function commitInitialFiles(startupName: string) {
       { stdio: "ignore" },
     )
     console.log("💾 Committed initial files")
-  } catch (error) {
+  } catch {
     console.log("⚠️  Could not commit files (git may not be configured)")
   }
 }
