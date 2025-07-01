@@ -5,6 +5,7 @@ import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
 import dotenv from "dotenv"
 import { createOrUpdateFile } from "./tools/createOrUpdateFile"
+import { convertMdToPdf } from "./tools/mdToPdf"
 
 dotenv.config()
 
@@ -33,6 +34,16 @@ export async function processWithLLM(userInput: string): Promise<string> {
         }),
         execute: async ({ path: filePath, content }) => {
           await createOrUpdateFile(filePath, content)
+        },
+      }),
+      convertMdToPdf: tool({
+        description: "Convert markdown file to PDF",
+        parameters: z.object({
+          pathToMd: z.string().describe("The path of the markdown file"),
+          pathToPdf: z.string().describe("The path of the resulting PDF file"),
+        }),
+        execute: async ({ pathToMd, pathToPdf }) => {
+          await convertMdToPdf(pathToMd, pathToPdf)
         },
       }),
     },

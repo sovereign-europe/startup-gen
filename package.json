@@ -35,6 +35,7 @@
     "fs-extra": "^11.3.0",
     "inquirer": "^12.6.3",
     "marked-terminal": "^7.3.0",
+    "md-to-pdf": "^5.2.4",
     "mustache": "^4.2.0"
   },
   "devDependencies": {
