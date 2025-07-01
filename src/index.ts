@@ -44,23 +44,8 @@ async function main(directory?: string) {
     console.log("CLI tool for early-stage startups to build lean startup methodology")
     console.log("─".repeat(50))
 
-    let targetDir: string
-
-    if (directory) {
-      targetDir = path.resolve(directory)
-    } else {
-      // Get directory option interactively
-      const { directory: selectedDirectory } = await inquirer.prompt([
-        {
-          type: "input",
-          name: "directory",
-          message: "Enter the directory to work in:",
-          default: process.cwd(),
-          validate: (input: string) => input.trim().length > 0 || "Directory cannot be empty",
-        },
-      ])
-      targetDir = path.resolve(selectedDirectory)
-    }
+    // Use command line directory or current working directory
+    const targetDir = directory ? path.resolve(directory) : process.cwd()
 
     // Ensure directory exists
     await fs.ensureDir(targetDir)
@@ -68,6 +53,9 @@ async function main(directory?: string) {
     // Change to target directory
     const originalCwd = process.cwd()
     process.chdir(targetDir)
+
+    // Display current working directory
+    console.log(`📁 Working directory: ${targetDir}`)
 
     try {
       // Start interactive mode directly
@@ -183,17 +171,17 @@ function showHelp() {
   console.log("  💬 quit, exit, q - Exit the application")
   console.log("  📝 <text> - General text input (future AI processing)")
   console.log("\nOptions:")
-  console.log("  -d, --directory <dir>  Specify the directory to work in")
+  console.log("  -d, --directory <dir>  Specify working directory (default: current directory)")
   console.log("  -h, --help            Show help information")
   console.log("\nUsage:")
-  console.log("  startup                            # Start interactive mode")
+  console.log("  startup                            # Interactive mode in current directory")
   console.log("  startup <command>                  # Direct command execution")
-  console.log("  startup -d /path/to/dir <command>  # Command with custom directory")
-  console.log("  startup --directory /path/to/dir   # Interactive mode with custom directory")
+  console.log("  startup -d /path/to/dir            # Interactive mode in custom directory")
+  console.log("  startup -d /path/to/dir <command>  # Direct command in custom directory")
   console.log("\nInteractive Experience:")
   console.log("  Similar to Claude Code - continuous input until you quit")
   console.log("  Type commands directly or enter any text for processing")
-  console.log("  All interactions happen in a persistent session")
+  console.log("  Working directory is set once at startup and cannot be changed")
 }
 
 async function executeCommandWithDirectory(command: string, directory?: string) {
