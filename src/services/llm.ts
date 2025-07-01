@@ -1,6 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 import { generateText } from "ai"
 import { systemPrompt } from "../prompts/SYSTEM"
+import { createContext } from "../utils/createContext"
 import dotenv from "dotenv"
 
 // Load environment variables
@@ -24,9 +25,13 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
 
     console.log("\n🤖 Processing with AI startup coach...")
 
+    // Create context and replace placeholder in system prompt
+    const context = await createContext()
+    const processedSystemPrompt = systemPrompt.replace("{{context}}", context)
+
     const result = await generateText({
       model: openai("gpt-3.5-turbo"),
-      system: systemPrompt,
+      system: processedSystemPrompt,
       prompt: userInput,
       maxTokens: 500, // Reasonable limit for console output
       temperature: 0.7, // Balanced creativity and consistency
