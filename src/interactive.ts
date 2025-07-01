@@ -102,13 +102,12 @@ async function processInteractiveInput(input: string) {
   // Handle general text input with LLM
   console.log(`\n💭 Question: "${input}"`)
 
-  const response = await processWithLLM(input)
-
-  if (response.success && response.content) {
+  try {
+    const response = await processWithLLM(input)
     console.log("\n🎯 AI Startup Coach:")
-    console.log(await formatLLMResponse(response.content))
-  } else {
-    console.log(`\n❌ ${response.error}`)
+    console.log(await formatLLMResponse(response))
+  } catch (error) {
+    console.log(`\n❌ ${error}`)
     console.log("\nℹ️  You can also use slash commands for specific actions:")
     console.log(
       `   ${getCommandNames()
