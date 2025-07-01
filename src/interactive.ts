@@ -7,7 +7,6 @@ import { formatLLMResponse } from "./services/formatLLMResponse"
 import { logCommand } from "./services/history"
 
 export async function startInteractiveMode() {
-  console.log("💬 Interactive AI Startup Coach")
   console.log("Ask me anything about your startup, or use slash commands for specific actions.")
   console.log("Type '/exit' or use Ctrl+C to leave.")
   console.log("")
