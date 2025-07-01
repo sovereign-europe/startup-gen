@@ -31,6 +31,8 @@ Thumbs.db
 # Logs
 logs
 *.log
+
+.startup
 `
 
   await fs.writeFile(".gitignore", gitignoreContent)

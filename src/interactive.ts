@@ -4,6 +4,7 @@ import inquirer from "inquirer"
 import path from "path"
 import fs from "fs-extra"
 import { formatLLMResponse } from "./services/formatLLMResponse"
+import { logCommand } from "./services/history"
 
 export async function startInteractiveMode() {
   console.log("💬 Interactive AI Startup Coach")
@@ -61,6 +62,9 @@ async function processInteractiveInput(input: string) {
       const commandDef = getCommand(commandName)!
       console.log(`\n🚀 Executing command: /${commandName}`)
 
+      // Log the command to history
+      await logCommand(commandName)
+
       // Special handling for help command
       if (commandName === "help") {
         showHelp()
@@ -79,7 +83,12 @@ async function processInteractiveInput(input: string) {
         const subCommand = findSubCommand(commandName, subCommandName)
 
         if (subCommand) {
-          console.log(`\n🚀 Executing command: /${commandName} ${subCommandName}`)
+          const fullCommand = `${commandName} ${subCommandName}`
+          console.log(`\n🚀 Executing command: /${fullCommand}`)
+
+          // Log the full command to history
+          await logCommand(fullCommand)
+
           await subCommand.handler(subCommandName)
           console.log("─".repeat(50))
           return
@@ -129,6 +138,9 @@ async function executeCommand(command: string) {
     process.exit(1)
     return
   }
+
+  // Log the command to history
+  await logCommand(command)
 
   if (command === "help") {
     showHelp()
