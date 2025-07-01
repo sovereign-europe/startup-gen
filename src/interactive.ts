@@ -1,8 +1,6 @@
 import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "./commands/registry"
 import { processWithLLM } from "./services/llm"
 import inquirer from "inquirer"
-import path from "path"
-import fs from "fs-extra"
 import { formatLLMResponse } from "./services/formatLLMResponse"
 import { logCommand } from "./services/history"
 
@@ -51,20 +49,16 @@ export async function startInteractiveMode() {
 async function processInteractiveInput(input: string) {
   const lowerInput = input.toLowerCase()
 
-  // Handle slash commands
   if (lowerInput.startsWith("/")) {
     const commandPart = lowerInput.substring(1)
     const [commandName, ...args] = commandPart.split(" ")
 
-    // Check if it's a direct command
     if (isValidCommand(commandName)) {
       const commandDef = getCommand(commandName)!
       console.log(`\n🚀 Executing command: /${commandName}`)
 
-      // Log the command to history
       await logCommand(commandName)
 
-      // Special handling for help command
       if (commandName === "help") {
         showHelp()
       } else {
@@ -74,7 +68,6 @@ async function processInteractiveInput(input: string) {
       return
     }
 
-    // Check if it's a sub-command (e.g., "build customer-segment")
     if (args.length > 0) {
       const parentCommand = getCommand(commandName)
       if (parentCommand?.subCommands) {
@@ -95,7 +88,6 @@ async function processInteractiveInput(input: string) {
       }
     }
 
-    // Unknown slash command
     console.log(`\n❌ Unknown command: /${commandPart}`)
     console.log(
       `Available slash commands: ${getCommandNames()
@@ -125,45 +117,6 @@ async function processInteractiveInput(input: string) {
   console.log("─".repeat(80))
 }
 
-async function executeCommand(command: string) {
-  const commandDef = getCommand(command)
-
-  if (!commandDef) {
-    console.error("Unknown command:", command)
-    showHelp()
-    process.exit(1)
-    return
-  }
-
-  // Log the command to history
-  await logCommand(command)
-
-  if (command === "help") {
-    showHelp()
-  } else {
-    await commandDef.handler()
-  }
-}
-
 export function showHelp() {
   console.log(generateHelpText())
-}
-
-export async function executeCommandWithDirectory(command: string, directory?: string) {
-  // Ensure directory exists and change to it
-  if (directory) {
-    const targetDir = path.resolve(directory)
-    await fs.ensureDir(targetDir)
-
-    const originalCwd = process.cwd()
-    process.chdir(targetDir)
-
-    try {
-      await executeCommand(command)
-    } finally {
-      process.chdir(originalCwd)
-    }
-  } else {
-    await executeCommand(command)
-  }
 }
