@@ -1,8 +1,9 @@
 import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "./commands/registry"
-import { processWithLLM, formatLLMResponse } from "./services/llm"
+import { processWithLLM } from "./services/llm"
 import inquirer from "inquirer"
 import path from "path"
 import fs from "fs-extra"
+import { formatLLMResponse } from "./services/formatLLMResponse"
 
 export async function startInteractiveMode() {
   console.log("💬 Interactive AI Startup Coach")
