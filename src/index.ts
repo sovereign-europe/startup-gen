@@ -2,13 +2,10 @@
 
 import path from "path"
 import fs from "fs-extra"
-import { startInteractiveMode, showHelp, executeCommandWithDirectory } from "./interactive"
-import { isValidCommand } from "./commands/registry"
+import { startInteractiveMode } from "./interactive"
 
 interface ParsedArgs {
   directory?: string
-  command?: string
-  showHelp?: boolean
 }
 
 function parseArgs(): ParsedArgs {
@@ -26,11 +23,6 @@ function parseArgs(): ParsedArgs {
         console.error("❌ Error: --directory flag requires a value")
         process.exit(1)
       }
-    } else if (arg === "--help" || arg === "-h") {
-      result.showHelp = true
-    } else if (!result.command && !arg.startsWith("-")) {
-      // Support both slash and non-slash commands for CLI usage
-      result.command = arg.startsWith("/") ? arg.substring(1) : arg
     }
   }
 
@@ -64,24 +56,15 @@ async function main(directory?: string) {
   }
 }
 
-// Parse command line arguments
 const parsedArgs = parseArgs()
 
-if (parsedArgs.showHelp) {
-  showHelp()
-} else if (parsedArgs.command) {
-  // Direct command mode
-  if (isValidCommand(parsedArgs.command)) {
-    executeCommandWithDirectory(parsedArgs.command, parsedArgs.directory).catch((error) => {
-      console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
-      process.exit(1)
-    })
+// --- Global Entry Point ---
+main(parsedArgs.directory).catch((error) => {
+  console.error("An unexpected critical error occurred:")
+  if (error instanceof Error) {
+    console.error(error.stack)
   } else {
-    console.error("❌ Unknown command:", parsedArgs.command)
-    showHelp()
-    process.exit(1)
+    console.error(String(error))
   }
-} else {
-  // Interactive mode
-  main(parsedArgs.directory)
-}
+  process.exit(1)
+})
