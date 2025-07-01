@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/sovereign-europe/startup-gen/compare/v1.1.0...v1.2.0) (2025-07-01)
+
+
+### Features
+
+* **index.ts:** implement interactive mode for CLI tool to enhance user experience and streamline command execution ([fb29ca5](https://github.com/sovereign-europe/startup-gen/commit/fb29ca549cfbcdaa9e41773e4a31324aed597e24))
+
 # [1.1.0](https://github.com/sovereign-europe/startup-gen/compare/v1.0.1...v1.1.0) (2025-06-27)
 
 
