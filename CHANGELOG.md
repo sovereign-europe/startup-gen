@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/sovereign-europe/startup-gen/compare/v1.2.0...v1.3.0) (2025-07-01)
+
+
+### Features
+
+* **commands:** add command registry to manage core, build, and system commands ([5368cc9](https://github.com/sovereign-europe/startup-gen/commit/5368cc93d75120875526ccb5197373c134b34be0))
+
 # [1.2.0](https://github.com/sovereign-europe/startup-gen/compare/v1.1.0...v1.2.0) (2025-07-01)
 
 
