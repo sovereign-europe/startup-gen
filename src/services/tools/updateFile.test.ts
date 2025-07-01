@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import fs from "fs-extra"
 import path from "path"
-import { updateFile } from "./updateFile"
+import { createOrUpdateFile } from "./createOrUpdateFile"
 
 vi.mock("fs-extra")
 
@@ -22,7 +22,7 @@ describe("updateFile tool", () => {
     const filePath = "test-file.txt"
     const content = "Hello, World!"
 
-    await updateFile(filePath, content)
+    await createOrUpdateFile(filePath, content)
 
     expect(mockFs.ensureDir).toHaveBeenCalledWith(path.dirname(path.resolve(filePath)))
     expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(filePath), content, "utf-8")
@@ -32,7 +32,7 @@ describe("updateFile tool", () => {
     const filePath = "nested/folder/test-file.txt"
     const content = "Test content"
 
-    await updateFile(filePath, content)
+    await createOrUpdateFile(filePath, content)
 
     expect(mockFs.ensureDir).toHaveBeenCalledWith(path.dirname(path.resolve(filePath)))
     expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(filePath), content, "utf-8")
@@ -42,7 +42,9 @@ describe("updateFile tool", () => {
     const filePath = "../outside-project/test-file.txt"
     const content = "Malicious content"
 
-    await expect(updateFile(filePath, content)).rejects.toThrow("File path must be within the project directory")
+    await expect(createOrUpdateFile(filePath, content)).rejects.toThrow(
+      "File path must be within the project directory",
+    )
 
     expect(mockFs.ensureDir).not.toHaveBeenCalled()
     expect(mockFs.writeFile).not.toHaveBeenCalled()
@@ -52,7 +54,9 @@ describe("updateFile tool", () => {
     const filePath = "/tmp/malicious-file.txt"
     const content = "Malicious content"
 
-    await expect(updateFile(filePath, content)).rejects.toThrow("File path must be within the project directory")
+    await expect(createOrUpdateFile(filePath, content)).rejects.toThrow(
+      "File path must be within the project directory",
+    )
 
     expect(mockFs.ensureDir).not.toHaveBeenCalled()
     expect(mockFs.writeFile).not.toHaveBeenCalled()
@@ -65,7 +69,7 @@ describe("updateFile tool", () => {
 
     mockFs.writeFile.mockRejectedValue(writeError)
 
-    await expect(updateFile(filePath, content)).rejects.toThrow("Permission denied")
+    await expect(createOrUpdateFile(filePath, content)).rejects.toThrow("Permission denied")
 
     expect(mockFs.ensureDir).toHaveBeenCalled()
     expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(filePath), content, "utf-8")
@@ -78,7 +82,7 @@ describe("updateFile tool", () => {
 
     mockFs.ensureDir.mockRejectedValue(dirError)
 
-    await expect(updateFile(filePath, content)).rejects.toThrow("Cannot create directory")
+    await expect(createOrUpdateFile(filePath, content)).rejects.toThrow("Cannot create directory")
 
     expect(mockFs.ensureDir).toHaveBeenCalled()
     expect(mockFs.writeFile).not.toHaveBeenCalled()
@@ -93,7 +97,7 @@ describe("updateFile tool", () => {
     ]
 
     for (const testCase of testCases) {
-      await updateFile(testCase.path, testCase.content)
+      await createOrUpdateFile(testCase.path, testCase.content)
 
       expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(testCase.path), testCase.content, "utf-8")
     }
@@ -105,7 +109,7 @@ describe("updateFile tool", () => {
     const filePath = "empty-file.txt"
     const content = ""
 
-    await updateFile(filePath, content)
+    await createOrUpdateFile(filePath, content)
 
     expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(filePath), content, "utf-8")
   })
@@ -114,7 +118,7 @@ describe("updateFile tool", () => {
     const filePath = "special-chars.txt"
     const content = "Special chars: 🚀 äöü ñ 中文 \n\t\r"
 
-    await updateFile(filePath, content)
+    await createOrUpdateFile(filePath, content)
 
     expect(mockFs.writeFile).toHaveBeenCalledWith(path.resolve(filePath), content, "utf-8")
   })

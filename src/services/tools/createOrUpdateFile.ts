@@ -1,7 +1,7 @@
 import path from "path"
 import fs from "fs-extra"
 
-export async function updateFile(filePath: string, content: string): Promise<void> {
+export async function createOrUpdateFile(filePath: string, content: string): Promise<void> {
   const resolvedPath = path.resolve(filePath)
   const projectRoot = process.cwd()
 

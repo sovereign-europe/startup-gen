@@ -4,7 +4,7 @@ import { generateText, tool } from "ai"
 import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
 import dotenv from "dotenv"
-import { updateFile } from "./tools/updateFile"
+import { createOrUpdateFile } from "./tools/createOrUpdateFile"
 
 dotenv.config()
 
@@ -25,14 +25,14 @@ export async function processWithLLM(userInput: string): Promise<string> {
     maxTokens: 500, // Reasonable limit for console output
     temperature: 0.7, // Balanced creativity and consistency,
     tools: {
-      updateFile: tool({
-        description: "Update a file with the given content",
+      createOrUpdateFile: tool({
+        description: "Create or update a file with the given content",
         parameters: z.object({
-          path: z.string().describe("The path of the file to update"),
-          content: z.string().describe("The content to update the file with"),
+          path: z.string().describe("The path of the file to create or update"),
+          content: z.string().describe("The content to create or update the file with"),
         }),
         execute: async ({ path: filePath, content }) => {
-          await updateFile(filePath, content)
+          await createOrUpdateFile(filePath, content)
         },
       }),
     },
