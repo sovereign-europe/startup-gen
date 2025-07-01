@@ -152,8 +152,8 @@ export function generateHelpText(): string {
   }
 
   lines.push("\nInteractive Input:")
-  lines.push("  📝 <text> - General text input (future AI processing)")
-  lines.push("  💬 Use slash commands (/) like Claude Code for explicit commands")
+  lines.push("  🤖 <text> - Ask the AI startup coach anything about your business")
+  lines.push("  💬 Use slash commands (/) like Claude Code for specific actions")
 
   lines.push("\nCLI Options:")
   lines.push("  -d, --directory <dir>  Specify working directory (default: current directory)")
@@ -166,8 +166,8 @@ export function generateHelpText(): string {
   lines.push("  startup -d /path/to/dir <command>  # Direct command in custom directory")
 
   lines.push("\nInteractive Experience:")
-  lines.push("  Similar to Claude Code - continuous input until you exit")
-  lines.push("  Use /command for explicit commands, or type text for AI processing")
+  lines.push("  AI-powered startup coaching - ask questions or use slash commands")
+  lines.push("  Similar to Claude Code interface with continuous input until you exit")
   lines.push("  Working directory is set once at startup and cannot be changed")
 
   return lines.join("\n")

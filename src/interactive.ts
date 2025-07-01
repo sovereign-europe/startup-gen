@@ -1,12 +1,22 @@
 import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "./commands/registry"
+import { processWithLLM, formatLLMResponse } from "./services/llm"
 import inquirer from "inquirer"
 import path from "path"
 import fs from "fs-extra"
 
 export async function startInteractiveMode() {
-  console.log("Enter slash commands or text. Type '/exit' or use Ctrl+C to leave.")
+  console.log("💬 Interactive AI Startup Coach")
+  console.log("Ask me anything about your startup, or use slash commands for specific actions.")
+  console.log("Type '/exit' or use Ctrl+C to leave.")
+  console.log("")
+  console.log("🎯 Examples:")
+  console.log("  'How do I validate my startup idea?'")
+  console.log("  'What should I do first as a new founder?'")
+  console.log("  '/init' (to set up a new project)")
+  console.log("  '/build customer-segment' (to create personas)")
+  console.log("")
   console.log(
-    `Available commands: ${getCommandNames()
+    `Slash commands: ${getCommandNames()
       .map((name) => `/${name}`)
       .join(", ")}`,
   )
@@ -88,19 +98,26 @@ async function processInteractiveInput(input: string) {
     return
   }
 
-  // Handle general text input - could be used for AI processing in the future
-  console.log(`\n💭 You said: "${input}"`)
-  console.log("🤖 Processing your input...")
+  // Handle general text input with LLM
+  console.log(`\n💭 Question: "${input}"`)
 
-  // For now, just acknowledge the input
-  console.log("ℹ️  This is a text input. In the future, this could be processed by AI.")
-  console.log(
-    `   Current available commands: ${getCommandNames()
-      .map((name) => `/${name}`)
-      .join(", ")}`,
-  )
-  console.log("   Type '/help' to see all available commands.")
-  console.log("─".repeat(50))
+  const response = await processWithLLM(input)
+
+  if (response.success && response.content) {
+    console.log("\n🎯 AI Startup Coach:")
+    console.log(formatLLMResponse(response.content))
+  } else {
+    console.log(`\n❌ ${response.error}`)
+    console.log("\nℹ️  You can also use slash commands for specific actions:")
+    console.log(
+      `   ${getCommandNames()
+        .map((name) => `/${name}`)
+        .join(", ")}`,
+    )
+    console.log("   Type '/help' to see all available commands.")
+  }
+
+  console.log("─".repeat(80))
 }
 
 async function executeCommand(command: string) {
