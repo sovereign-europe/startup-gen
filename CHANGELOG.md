@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/sovereign-europe/startup-gen/compare/v1.3.0...v1.4.0) (2025-07-01)
+
+
+### Features
+
+* add command history ([02482b7](https://github.com/sovereign-europe/startup-gen/commit/02482b761077b62a3250deab4742b88bb49f6502))
+* add context to the llm ([30fb8f6](https://github.com/sovereign-europe/startup-gen/commit/30fb8f61523bc4bf4610d49594a46190c7e59d2b))
+* add llm command ([e590bb5](https://github.com/sovereign-europe/startup-gen/commit/e590bb5b826ce396c238acb882d2c28daf676c72))
+* add tool to update file content ([f58e32e](https://github.com/sovereign-europe/startup-gen/commit/f58e32ed294538e04216d90785cacb5f45a4efc3))
+* add tool to update file content ([dee8099](https://github.com/sovereign-europe/startup-gen/commit/dee8099ef88c8e68d3801f5f5cc76457073ee406))
+* format llm response ([0914df4](https://github.com/sovereign-europe/startup-gen/commit/0914df490c77992d2ed11136b856edbdf3bd1c8c))
+
 # [1.3.0](https://github.com/sovereign-europe/startup-gen/compare/v1.2.0...v1.3.0) (2025-07-01)
 
 
