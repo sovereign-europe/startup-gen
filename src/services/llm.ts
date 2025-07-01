@@ -7,7 +7,6 @@ import fs from "fs-extra"
 import path from "path"
 import dotenv from "dotenv"
 
-// Load environment variables
 dotenv.config()
 
 export interface LLMResponse {
@@ -18,7 +17,6 @@ export interface LLMResponse {
 
 export async function processWithLLM(userInput: string): Promise<LLMResponse> {
   try {
-    // Check if OpenAI API key is available
     if (!process.env.OPENAI_API_KEY) {
       return {
         success: false,
@@ -28,7 +26,6 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
 
     console.log("\n🤖 Processing with AI startup coach...")
 
-    // Create context and replace placeholder in system prompt
     const context = await createContext()
     const processedSystemPrompt = systemPrompt.replace("{{context}}", context)
 
@@ -47,7 +44,6 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
           }),
           execute: async ({ path: filePath, content }) => {
             try {
-              // Validate file path - ensure it's within the project directory
               const resolvedPath = path.resolve(filePath)
               const projectRoot = process.cwd()
 
@@ -58,10 +54,8 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
                 }
               }
 
-              // Ensure the directory exists
               await fs.ensureDir(path.dirname(resolvedPath))
 
-              // Write the file
               await fs.writeFile(resolvedPath, content, "utf-8")
 
               return {
