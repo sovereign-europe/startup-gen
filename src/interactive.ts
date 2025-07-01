@@ -108,9 +108,6 @@ async function processInteractiveInput(input: string) {
     return
   }
 
-  // Handle general text input with LLM
-  console.log(`\n💭 Question: "${input}"`)
-
   try {
     const response = await processWithLLM(input)
     console.log("\n🎯 AI Startup Coach:")
