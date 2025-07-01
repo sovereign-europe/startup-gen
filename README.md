@@ -34,7 +34,7 @@ startup
 - Node.js 16+
 - OpenAI API key for customer segment generation
 
-## Tech
+## Tech Stack
 - TypeScript
 - [Inquirer.js](https://github.com/SBoudrias/Inquirer.js)
 
