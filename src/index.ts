@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import inquirer from "inquirer"
-import { initCommand } from "./commands/init"
-import { buildCommand } from "./commands/build"
+import { getCommand, getCommandNames, isValidCommand, findSubCommand, generateHelpText } from "./commands/registry"
 import path from "path"
 import fs from "fs-extra"
 
@@ -40,10 +39,10 @@ function parseArgs(): ParsedArgs {
 
 async function main(directory?: string) {
   try {
-    console.log("─".repeat(50))
+    console.log("─".repeat(80))
     console.log("🚀 Startup CLI")
     console.log("CLI tool for early-stage startups to build lean startup methodology")
-    console.log("─".repeat(50))
+    console.log("─".repeat(80))
 
     // Use command line directory or current working directory
     const targetDir = directory ? path.resolve(directory) : process.cwd()
@@ -72,10 +71,13 @@ async function main(directory?: string) {
 }
 
 async function startInteractiveMode() {
-  console.log("\n💬 Interactive Mode")
   console.log("Enter slash commands or text. Type '/exit' or use Ctrl+C to leave.")
-  console.log("Available commands: /init, /build, /help, /exit")
-  console.log("─".repeat(50))
+  console.log(
+    `Available commands: ${getCommandNames()
+      .map((name) => `/${name}`)
+      .join(", ")}`,
+  )
+  console.log("─".repeat(80))
 
   let isRunning = true
 
@@ -108,34 +110,47 @@ async function processInteractiveInput(input: string) {
 
   // Handle slash commands
   if (lowerInput.startsWith("/")) {
-    const command = lowerInput.substring(1)
+    const commandPart = lowerInput.substring(1)
+    const [commandName, ...args] = commandPart.split(" ")
 
-    // Handle direct slash commands
-    if (["init", "build", "help"].includes(command)) {
-      console.log(`\n🚀 Executing command: /${command}`)
-      await executeCommand(command)
+    // Check if it's a direct command
+    if (isValidCommand(commandName)) {
+      const commandDef = getCommand(commandName)!
+      console.log(`\n🚀 Executing command: /${commandName}`)
+
+      // Special handling for help command
+      if (commandName === "help") {
+        showHelp()
+      } else {
+        await commandDef.handler()
+      }
       console.log("─".repeat(50))
       return
     }
 
-    // Handle /exit command (alias for quit)
-    if (["exit", "quit", "q"].includes(command)) {
-      console.log("👋 Goodbye!")
-      process.exit(0)
-    }
+    // Check if it's a sub-command (e.g., "build customer-segment")
+    if (args.length > 0) {
+      const parentCommand = getCommand(commandName)
+      if (parentCommand?.subCommands) {
+        const subCommandName = args.join(" ")
+        const subCommand = findSubCommand(commandName, subCommandName)
 
-    // Handle build sub-commands
-    if (command.startsWith("build ")) {
-      const buildStep = command.substring(6).trim()
-      console.log(`\n🚀 Executing build command: /${command}`)
-      await buildCommand.run(buildStep)
-      console.log("─".repeat(50))
-      return
+        if (subCommand) {
+          console.log(`\n🚀 Executing command: /${commandName} ${subCommandName}`)
+          await subCommand.handler(subCommandName)
+          console.log("─".repeat(50))
+          return
+        }
+      }
     }
 
     // Unknown slash command
-    console.log(`\n❌ Unknown command: /${command}`)
-    console.log("Available slash commands: /init, /build, /help, /exit")
+    console.log(`\n❌ Unknown command: /${commandPart}`)
+    console.log(
+      `Available slash commands: ${getCommandNames()
+        .map((name) => `/${name}`)
+        .join(", ")}`,
+    )
     console.log("Type /help to see all available commands.")
     console.log("─".repeat(50))
     return
@@ -147,53 +162,34 @@ async function processInteractiveInput(input: string) {
 
   // For now, just acknowledge the input
   console.log("ℹ️  This is a text input. In the future, this could be processed by AI.")
-  console.log("   Current available commands: /init, /build [step], /help, /exit")
+  console.log(
+    `   Current available commands: ${getCommandNames()
+      .map((name) => `/${name}`)
+      .join(", ")}`,
+  )
   console.log("   Type '/help' to see all available commands.")
   console.log("─".repeat(50))
 }
 
 async function executeCommand(command: string) {
-  switch (command) {
-    case "init":
-      await initCommand()
-      break
-    case "build":
-      await buildCommand.run()
-      break
-    case "help":
-      showHelp()
-      break
-    default:
-      console.error("Unknown command:", command)
-      showHelp()
-      process.exit(1)
+  const commandDef = getCommand(command)
+
+  if (!commandDef) {
+    console.error("Unknown command:", command)
+    showHelp()
+    process.exit(1)
+    return
+  }
+
+  if (command === "help") {
+    showHelp()
+  } else {
+    await commandDef.handler()
   }
 }
 
 function showHelp() {
-  console.log("\n📖 Available Slash Commands:")
-  console.log("  🎯 /init  - Initialize a new startup project")
-  console.log("  🚀 /build - Build startup components (problem-analysis, customer-segment, etc.)")
-  console.log("    • /build customer-segment - Create customer personas")
-  console.log("    • /build problem-analysis - Identify top problems")
-  console.log("    • /build market-analysis - Analyze market opportunity")
-  console.log("  ℹ️  /help - Show this help information")
-  console.log("  👋 /exit - Exit the application")
-  console.log("\nInteractive Input:")
-  console.log("  📝 <text> - General text input (future AI processing)")
-  console.log("  💬 Use slash commands (/) like Claude Code for explicit commands")
-  console.log("\nCLI Options:")
-  console.log("  -d, --directory <dir>  Specify working directory (default: current directory)")
-  console.log("  -h, --help            Show help information")
-  console.log("\nUsage:")
-  console.log("  startup                            # Interactive mode in current directory")
-  console.log("  startup <command>                  # Direct command execution (without /)")
-  console.log("  startup -d /path/to/dir            # Interactive mode in custom directory")
-  console.log("  startup -d /path/to/dir <command>  # Direct command in custom directory")
-  console.log("\nInteractive Experience:")
-  console.log("  Similar to Claude Code - continuous input until you exit")
-  console.log("  Use /command for explicit commands, or type text for AI processing")
-  console.log("  Working directory is set once at startup and cannot be changed")
+  console.log(generateHelpText())
 }
 
 async function executeCommandWithDirectory(command: string, directory?: string) {
@@ -222,9 +218,7 @@ if (parsedArgs.showHelp) {
   showHelp()
 } else if (parsedArgs.command) {
   // Direct command mode
-  const allowedCommands = ["init", "build", "help"]
-
-  if (allowedCommands.includes(parsedArgs.command)) {
+  if (isValidCommand(parsedArgs.command)) {
     executeCommandWithDirectory(parsedArgs.command, parsedArgs.directory).catch((error) => {
       console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
       process.exit(1)
