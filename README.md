@@ -34,6 +34,10 @@ npx startup-gen build customer-segment
 - Node.js 16+
 - OpenAI API key for customer segment generation
 
+## Tech
+- TypeScript
+- [Inquirer.js](https://github.com/SBoudrias/Inquirer.js)
+
 ## License
 
 MIT

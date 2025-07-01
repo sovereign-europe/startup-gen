@@ -30,7 +30,8 @@ function parseArgs(): ParsedArgs {
     } else if (arg === "--help" || arg === "-h") {
       result.showHelp = true
     } else if (!result.command && !arg.startsWith("-")) {
-      result.command = arg
+      // Support both slash and non-slash commands for CLI usage
+      result.command = arg.startsWith("/") ? arg.substring(1) : arg
     }
   }
 
@@ -72,8 +73,8 @@ async function main(directory?: string) {
 
 async function startInteractiveMode() {
   console.log("\n💬 Interactive Mode")
-  console.log("Enter commands or text. Type 'quit', 'exit', or 'q' to leave.")
-  console.log("Available commands: init, build, help")
+  console.log("Enter slash commands or text. Type '/exit' or use Ctrl+C to leave.")
+  console.log("Available commands: /init, /build, /help, /exit")
   console.log("─".repeat(50))
 
   let isRunning = true
@@ -88,15 +89,6 @@ async function startInteractiveMode() {
           validate: (input: string) => input.trim().length > 0 || "Input cannot be empty",
         },
       ])
-
-      const trimmedInput = input.trim().toLowerCase()
-
-      // Check for quit commands
-      if (["quit", "exit", "q"].includes(trimmedInput)) {
-        console.log("👋 Goodbye!")
-        isRunning = false
-        continue
-      }
 
       // Process the input
       await processInteractiveInput(input.trim())
@@ -114,19 +106,37 @@ async function startInteractiveMode() {
 async function processInteractiveInput(input: string) {
   const lowerInput = input.toLowerCase()
 
-  // Handle direct commands
-  if (["init", "build", "help"].includes(lowerInput)) {
-    console.log(`\n🚀 Executing command: ${lowerInput}`)
-    await executeCommand(lowerInput)
-    console.log("─".repeat(50))
-    return
-  }
+  // Handle slash commands
+  if (lowerInput.startsWith("/")) {
+    const command = lowerInput.substring(1)
 
-  // Handle build sub-commands
-  if (lowerInput.startsWith("build ")) {
-    const buildStep = lowerInput.substring(6).trim()
-    console.log(`\n🚀 Executing build command: ${buildStep}`)
-    await buildCommand.run(buildStep)
+    // Handle direct slash commands
+    if (["init", "build", "help"].includes(command)) {
+      console.log(`\n🚀 Executing command: /${command}`)
+      await executeCommand(command)
+      console.log("─".repeat(50))
+      return
+    }
+
+    // Handle /exit command (alias for quit)
+    if (["exit", "quit", "q"].includes(command)) {
+      console.log("👋 Goodbye!")
+      process.exit(0)
+    }
+
+    // Handle build sub-commands
+    if (command.startsWith("build ")) {
+      const buildStep = command.substring(6).trim()
+      console.log(`\n🚀 Executing build command: /${command}`)
+      await buildCommand.run(buildStep)
+      console.log("─".repeat(50))
+      return
+    }
+
+    // Unknown slash command
+    console.log(`\n❌ Unknown command: /${command}`)
+    console.log("Available slash commands: /init, /build, /help, /exit")
+    console.log("Type /help to see all available commands.")
     console.log("─".repeat(50))
     return
   }
@@ -137,8 +147,8 @@ async function processInteractiveInput(input: string) {
 
   // For now, just acknowledge the input
   console.log("ℹ️  This is a text input. In the future, this could be processed by AI.")
-  console.log("   Current available commands: init, build [step], help")
-  console.log("   Type 'help' to see all available commands.")
+  console.log("   Current available commands: /init, /build [step], /help, /exit")
+  console.log("   Type '/help' to see all available commands.")
   console.log("─".repeat(50))
 }
 
@@ -161,26 +171,28 @@ async function executeCommand(command: string) {
 }
 
 function showHelp() {
-  console.log("\n📖 Available Commands:")
-  console.log("  🎯 init  - Initialize a new startup project")
-  console.log("  🚀 build - Build startup components (problem-analysis, customer-segment, etc.)")
-  console.log("    • build customer-segment - Create customer personas")
-  console.log("    • build problem-analysis - Identify top problems")
-  console.log("    • build market-analysis - Analyze market opportunity")
-  console.log("\nInteractive Commands:")
-  console.log("  💬 quit, exit, q - Exit the application")
+  console.log("\n📖 Available Slash Commands:")
+  console.log("  🎯 /init  - Initialize a new startup project")
+  console.log("  🚀 /build - Build startup components (problem-analysis, customer-segment, etc.)")
+  console.log("    • /build customer-segment - Create customer personas")
+  console.log("    • /build problem-analysis - Identify top problems")
+  console.log("    • /build market-analysis - Analyze market opportunity")
+  console.log("  ℹ️  /help - Show this help information")
+  console.log("  👋 /exit - Exit the application")
+  console.log("\nInteractive Input:")
   console.log("  📝 <text> - General text input (future AI processing)")
-  console.log("\nOptions:")
+  console.log("  💬 Use slash commands (/) like Claude Code for explicit commands")
+  console.log("\nCLI Options:")
   console.log("  -d, --directory <dir>  Specify working directory (default: current directory)")
   console.log("  -h, --help            Show help information")
   console.log("\nUsage:")
   console.log("  startup                            # Interactive mode in current directory")
-  console.log("  startup <command>                  # Direct command execution")
+  console.log("  startup <command>                  # Direct command execution (without /)")
   console.log("  startup -d /path/to/dir            # Interactive mode in custom directory")
   console.log("  startup -d /path/to/dir <command>  # Direct command in custom directory")
   console.log("\nInteractive Experience:")
-  console.log("  Similar to Claude Code - continuous input until you quit")
-  console.log("  Type commands directly or enter any text for processing")
+  console.log("  Similar to Claude Code - continuous input until you exit")
+  console.log("  Use /command for explicit commands, or type text for AI processing")
   console.log("  Working directory is set once at startup and cannot be changed")
 }
 
