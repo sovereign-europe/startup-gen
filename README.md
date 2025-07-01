@@ -17,16 +17,16 @@ A CLI tool for early-stage startups to build lean startup methodology. This tool
 
 ## Usage
 
-### Initialize a New Startup Project
+To install Startup Gen, use NPM:
 
-```bash
-npx startup-gen init
+```
+npm install -g startup-gen
 ```
 
-### Build Customer Segments
+To run Startup Gen, simply call the Startup Gen CLI:
 
-```bash
-npx startup-gen build customer-segment
+```
+startup
 ```
 
 ## Requirements
