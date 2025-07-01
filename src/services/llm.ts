@@ -1,7 +1,10 @@
+import { z } from "zod"
 import { openai } from "@ai-sdk/openai"
-import { generateText } from "ai"
+import { generateText, tool } from "ai"
 import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
+import fs from "fs-extra"
+import path from "path"
 import dotenv from "dotenv"
 
 // Load environment variables
@@ -34,7 +37,46 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
       system: processedSystemPrompt,
       prompt: userInput,
       maxTokens: 500, // Reasonable limit for console output
-      temperature: 0.7, // Balanced creativity and consistency
+      temperature: 0.7, // Balanced creativity and consistency,
+      tools: {
+        updateFile: tool({
+          description: "Update a file with the given content",
+          parameters: z.object({
+            path: z.string().describe("The path of the file to update"),
+            content: z.string().describe("The content to update the file with"),
+          }),
+          execute: async ({ path: filePath, content }) => {
+            try {
+              // Validate file path - ensure it's within the project directory
+              const resolvedPath = path.resolve(filePath)
+              const projectRoot = process.cwd()
+
+              if (!resolvedPath.startsWith(projectRoot)) {
+                return {
+                  success: false,
+                  error: "File path must be within the project directory",
+                }
+              }
+
+              // Ensure the directory exists
+              await fs.ensureDir(path.dirname(resolvedPath))
+
+              // Write the file
+              await fs.writeFile(resolvedPath, content, "utf-8")
+
+              return {
+                success: true,
+                message: `Successfully updated file: ${filePath}`,
+              }
+            } catch (error) {
+              return {
+                success: false,
+                error: error instanceof Error ? error.message : "Unknown error occurred",
+              }
+            }
+          },
+        }),
+      },
     })
 
     return {
