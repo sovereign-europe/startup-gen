@@ -3,9 +3,8 @@ import { openai } from "@ai-sdk/openai"
 import { generateText, tool } from "ai"
 import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
-import fs from "fs-extra"
-import path from "path"
 import dotenv from "dotenv"
+import { updateFile } from "./tools/updateFile"
 
 dotenv.config()
 
@@ -44,19 +43,7 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
           }),
           execute: async ({ path: filePath, content }) => {
             try {
-              const resolvedPath = path.resolve(filePath)
-              const projectRoot = process.cwd()
-
-              if (!resolvedPath.startsWith(projectRoot)) {
-                return {
-                  success: false,
-                  error: "File path must be within the project directory",
-                }
-              }
-
-              await fs.ensureDir(path.dirname(resolvedPath))
-
-              await fs.writeFile(resolvedPath, content, "utf-8")
+              await updateFile(filePath, content)
 
               return {
                 success: true,
