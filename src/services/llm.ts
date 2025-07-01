@@ -42,19 +42,7 @@ export async function processWithLLM(userInput: string): Promise<LLMResponse> {
             content: z.string().describe("The content to update the file with"),
           }),
           execute: async ({ path: filePath, content }) => {
-            try {
-              await updateFile(filePath, content)
-
-              return {
-                success: true,
-                message: `Successfully updated file: ${filePath}`,
-              }
-            } catch (error) {
-              return {
-                success: false,
-                error: error instanceof Error ? error.message : "Unknown error occurred",
-              }
-            }
+            await updateFile(filePath, content)
           },
         }),
       },
