@@ -1,5 +1,48 @@
-export function formatLLMResponse(response: string): string {
-  // Format the response for better console display
+import { marked } from "marked"
+import { markedTerminal } from "marked-terminal"
+
+async function parseMarkdown(text: string): Promise<string> {
+  marked.use(markedTerminal())
+
+  return marked.parse(text)
+}
+
+export async function formatLLMResponse(response: string): Promise<string> {
+  try {
+    const styledText = await parseMarkdown(response)
+
+    // Split into lines and add consistent formatting
+    const lines = styledText.split("\n")
+    const formattedLines = lines.map((line) => {
+      const trimmed = line.trim()
+
+      // Don't add padding to headers, lists, or special elements
+      if (
+        trimmed.startsWith("🎯") ||
+        trimmed.startsWith("🔸") ||
+        trimmed.startsWith("▪") ||
+        trimmed.startsWith("•") ||
+        trimmed.startsWith("📋") ||
+        trimmed === "" ||
+        trimmed.startsWith("─") ||
+        trimmed.startsWith("💡")
+      ) {
+        return line
+      }
+
+      // Add light padding to regular paragraphs
+      return trimmed ? `  ${trimmed}` : ""
+    })
+
+    return formattedLines.join("\n").trim()
+  } catch {
+    console.warn("Markdown styling failed, using plain text formatting")
+    return formatPlainText(response)
+  }
+}
+
+// Fallback plain text formatter (original implementation)
+function formatPlainText(response: string): string {
   const lines = response.split("\n")
   const formattedLines: string[] = []
 
@@ -9,7 +52,6 @@ export function formatLLMResponse(response: string): string {
       continue
     }
 
-    // Add proper indentation and wrapping for console
     const trimmedLine = line.trim()
     if (trimmedLine.length <= 70) {
       formattedLines.push(`  ${trimmedLine}`)

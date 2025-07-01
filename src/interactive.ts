@@ -106,7 +106,7 @@ async function processInteractiveInput(input: string) {
 
   if (response.success && response.content) {
     console.log("\n🎯 AI Startup Coach:")
-    console.log(formatLLMResponse(response.content))
+    console.log(await formatLLMResponse(response.content))
   } else {
     console.log(`\n❌ ${response.error}`)
     console.log("\nℹ️  You can also use slash commands for specific actions:")
