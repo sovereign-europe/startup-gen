@@ -1,8 +1,8 @@
 import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "./commands/registry"
 import { processWithLLM } from "./services/llm"
-import inquirer from "inquirer"
 import { formatLLMResponse } from "./services/formatLLMResponse"
 import { logCommand } from "./services/history"
+import { promptWithHistory } from "./services/readline-history"
 
 export async function startInteractiveMode() {
   console.log("Ask me anything about your startup, or use slash commands for specific actions.")
@@ -25,14 +25,10 @@ export async function startInteractiveMode() {
 
   while (isRunning) {
     try {
-      const { input } = await inquirer.prompt([
-        {
-          type: "input",
-          name: "input",
-          message: ">",
-          validate: (input: string) => input.trim().length > 0 || "Input cannot be empty",
-        },
-      ])
+      const input = await promptWithHistory({
+        prompt: "> ",
+        validate: (input: string) => input.trim().length > 0 || "Input cannot be empty",
+      })
 
       await processInteractiveInput(input.trim())
     } catch (error) {
@@ -57,8 +53,6 @@ async function processInteractiveInput(input: string) {
       const commandDef = getCommand(commandName)!
       console.log(`\n🚀 Executing command: /${commandName}`)
 
-      await logCommand(commandName)
-
       if (commandName === "help") {
         showHelp()
       } else {
@@ -78,9 +72,6 @@ async function processInteractiveInput(input: string) {
           const fullCommand = `${commandName} ${subCommandName}`
           console.log(`\n🚀 Executing command: /${fullCommand}`)
 
-          // Log the full command to history
-          await logCommand(fullCommand)
-
           await subCommand.handler(subCommandName)
           console.log("─".repeat(50))
           return
@@ -98,6 +89,8 @@ async function processInteractiveInput(input: string) {
     console.log("─".repeat(50))
     return
   }
+
+  await logCommand(input)
 
   try {
     const response = await processWithLLM(input)

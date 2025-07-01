@@ -36,7 +36,15 @@ export async function getCommandHistory(): Promise<string[]> {
     }
 
     const content = await fs.readFile(historyPath, "utf-8")
-    return content.split("\n").filter((line) => line.trim().length > 0)
+    return content
+      .split("\n")
+      .filter((line) => line.trim().length > 0)
+      .map((line) => {
+        // Extract just the command part (remove timestamp)
+        const match = line.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z - (.+)$/)
+        return match ? match[1] : line
+      })
+      .reverse() // Most recent first for history navigation
   } catch (error) {
     console.error("Warning: Failed to read command history:", error instanceof Error ? error.message : "Unknown error")
     return []
