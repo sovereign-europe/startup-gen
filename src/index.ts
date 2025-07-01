@@ -44,24 +44,18 @@ async function main(directory?: string) {
     console.log("CLI tool for early-stage startups to build lean startup methodology")
     console.log("─".repeat(80))
 
-    // Use command line directory or current working directory
     const targetDir = directory ? path.resolve(directory) : process.cwd()
-
-    // Ensure directory exists
     await fs.ensureDir(targetDir)
 
-    // Change to target directory
     const originalCwd = process.cwd()
     process.chdir(targetDir)
 
-    // Display current working directory
     console.log(`📁 Working directory: ${targetDir}`)
+    console.log("─".repeat(80))
 
     try {
-      // Start interactive mode directly
       await startInteractiveMode()
     } finally {
-      // Restore original working directory
       process.chdir(originalCwd)
     }
   } catch (error) {
