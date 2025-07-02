@@ -1,10 +1,24 @@
 import { z } from "zod"
 import { openai } from "@ai-sdk/openai"
+import { anthropic } from "@ai-sdk/anthropic"
+import { mistral } from "@ai-sdk/mistral"
 import { tool } from "ai"
 import { createOrUpdateFile } from "../services/tools/createOrUpdateFile"
 import { convertMdToPdf } from "../services/tools/mdToPdf"
 
-export const LLM_MODEL = openai("gpt-3.5-turbo")
+export function getLLMModel() {
+  const provider = process.env.AI_PROVIDER || "openai"
+
+  switch (provider) {
+    case "anthropic":
+      return anthropic(process.env.ANTHROPIC_MODEL || "claude-3-sonnet-20240229")
+    case "mistral":
+      return mistral(process.env.MISTRAL_MODEL || "mistral-medium")
+    case "openai":
+    default:
+      return openai(process.env.OPENAI_MODEL || "gpt-3.5-turbo")
+  }
+}
 
 export const LLM_CONFIG = {
   maxTokens: 500, // Reasonable limit for console output

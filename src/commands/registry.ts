@@ -1,11 +1,12 @@
 import { initCommand } from "./init"
 import { buildCommand } from "./build"
+import { modelCommand } from "./model"
 
 export interface CommandDefinition {
   name: string
   description: string
   icon: string
-  category: "core" | "build" | "system"
+  category: "core" | "build" | "system" | "config"
   handler: () => Promise<void> | void
   subCommands?: SubCommandDefinition[]
 }
@@ -79,6 +80,15 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
       },
     ],
   },
+  model: {
+    name: "model",
+    description: "Configure AI model provider (OpenAI, Anthropic, Mistral)",
+    icon: "🤖",
+    category: "config",
+    handler: async () => {
+      await modelCommand()
+    },
+  },
   help: {
     name: "help",
     description: "Show this help information",
@@ -133,7 +143,7 @@ export function generateHelpText(): string {
   lines.push("\n📖 Available Slash Commands:")
 
   // Group by category
-  const categories = ["core", "build", "system"] as const
+  const categories = ["core", "build", "config", "system"] as const
 
   for (const category of categories) {
     const commands = getCommandsByCategory(category)
