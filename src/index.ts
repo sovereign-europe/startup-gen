@@ -3,6 +3,7 @@
 import path from "path"
 import fs from "fs-extra"
 import { startInteractiveMode } from "./interactive"
+import { STARTUP_ASCII } from "./utils/ascii-art"
 
 interface ParsedArgs {
   directory?: string
@@ -32,8 +33,8 @@ function parseArgs(): ParsedArgs {
 async function main(directory?: string) {
   try {
     console.log("─".repeat(80))
-    console.log("🚀 Startup CLI")
-    console.log("CLI tool for early-stage startups to build lean startup methodology")
+    console.log(STARTUP_ASCII)
+    console.log("🚀 CLI tool for early-stage startups to build lean startup methodology")
     console.log("─".repeat(80))
 
     const targetDir = directory ? path.resolve(directory) : process.cwd()
