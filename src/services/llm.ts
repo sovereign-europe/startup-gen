@@ -2,6 +2,7 @@ import { generateText } from "ai"
 import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
 import { getLLMModel, LLM_CONFIG, LLM_TOOLS } from "../utils/llm-config"
+import { getRecentConversationForModel } from "./conversation-history"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -21,10 +22,25 @@ export async function processWithLLM(userInput: string): Promise<string> {
   const context = await createContext()
   const processedSystemPrompt = systemPrompt.replace("{{context}}", context)
 
+  // Get recent conversation history for context
+  const recentHistory = await getRecentConversationForModel()
+
+  // Build messages array with conversation history
+  const messages = [
+    ...recentHistory.map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+    })),
+    {
+      role: "user" as const,
+      content: userInput,
+    },
+  ]
+
   const result = await generateText({
     model: getLLMModel(),
     system: processedSystemPrompt,
-    prompt: userInput,
+    messages,
     ...LLM_CONFIG,
     tools: LLM_TOOLS,
   })
