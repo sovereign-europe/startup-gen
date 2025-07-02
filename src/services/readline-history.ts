@@ -1,5 +1,5 @@
 import readline from "readline"
-import { getCommandHistory } from "./history"
+import { getUserInputHistory } from "./conversation-history"
 
 export interface ReadlineHistoryOptions {
   prompt?: string
@@ -9,8 +9,8 @@ export interface ReadlineHistoryOptions {
 export async function promptWithHistory(options: ReadlineHistoryOptions = {}): Promise<string> {
   const { prompt = "> ", validate } = options
 
-  // Load command history
-  const history = await getCommandHistory()
+  // Load user input history
+  const history = await getUserInputHistory()
 
   return new Promise((resolve, reject) => {
     const rl = readline.createInterface({

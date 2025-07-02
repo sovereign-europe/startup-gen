@@ -1,0 +1,16 @@
+{
+  "messages": [
+    {
+      "id": "270f7ab9-8447-4f10-ba78-5d3b863fcf3d",
+      "role": "user",
+      "content": "/help",
+      "timestamp": "2025-07-02T11:23:14.206Z"
+    },
+    {
+      "id": "db6db708-e3f2-455b-a44b-3adfbadba2b9",
+      "role": "assistant",
+      "content": "Help information displayed",
+      "timestamp": "2025-07-02T11:23:14.208Z"
+    }
+  ]
+}

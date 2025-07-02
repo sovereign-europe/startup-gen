@@ -1,7 +1,7 @@
 import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "./commands/registry"
 import { processWithLLM } from "./services/llm"
 import { formatLLMResponse } from "./services/formatLLMResponse"
-import { logCommand } from "./services/history"
+import { addMessage } from "./services/conversation-history"
 import { promptWithHistory } from "./services/readline-history"
 
 export async function startInteractiveMode() {
@@ -49,14 +49,19 @@ async function processInteractiveInput(input: string) {
     const commandPart = lowerInput.substring(1)
     const [commandName, ...args] = commandPart.split(" ")
 
+    // Save slash command to conversation history
+    await addMessage("user", input)
+
     if (isValidCommand(commandName)) {
       const commandDef = getCommand(commandName)!
       console.log(`\n🚀 Executing command: /${commandName}`)
 
       if (commandName === "help") {
         showHelp()
+        await addMessage("assistant", "Help information displayed")
       } else {
         await commandDef.handler()
+        await addMessage("assistant", `Executed command: ${commandName}`)
       }
       console.log("─".repeat(50))
       return
@@ -73,6 +78,7 @@ async function processInteractiveInput(input: string) {
           console.log(`\n🚀 Executing command: /${fullCommand}`)
 
           await subCommand.handler(subCommandName)
+          await addMessage("assistant", `Executed command: ${fullCommand}`)
           console.log("─".repeat(50))
           return
         }
@@ -86,16 +92,25 @@ async function processInteractiveInput(input: string) {
         .join(", ")}`,
     )
     console.log("Type /help to see all available commands.")
+    await addMessage(
+      "assistant",
+      `Unknown command: ${commandPart}. Available commands: ${getCommandNames().join(", ")}`,
+    )
     console.log("─".repeat(50))
     return
   }
 
-  await logCommand(input)
+  // Save user input to conversation history
+  await addMessage("user", input)
 
   try {
     const response = await processWithLLM(input)
     console.log("\n🎯 AI Startup Coach:")
-    console.log(await formatLLMResponse(response))
+    const formattedResponse = await formatLLMResponse(response)
+    console.log(formattedResponse)
+
+    // Save assistant response to conversation history
+    await addMessage("assistant", response)
   } catch (error) {
     console.log(`\n❌ ${error}`)
     console.log("\nℹ️  You can also use slash commands for specific actions:")
@@ -105,6 +120,9 @@ async function processInteractiveInput(input: string) {
         .join(", ")}`,
     )
     console.log("   Type '/help' to see all available commands.")
+
+    // Save error as assistant response to conversation history
+    await addMessage("assistant", `Error: ${error}`)
   }
 
   console.log("─".repeat(80))
