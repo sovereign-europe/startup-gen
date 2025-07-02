@@ -105,7 +105,7 @@ async function processInteractiveInput(input: string) {
 
   try {
     const response = await processWithLLM(input)
-    console.log("\n🎯 AI Startup Coach:")
+    console.log("─".repeat(80))
     const formattedResponse = await formatLLMResponse(response)
     console.log(formattedResponse)
 
