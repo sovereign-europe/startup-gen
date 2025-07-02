@@ -17,8 +17,6 @@ export async function processWithLLM(userInput: string): Promise<string> {
     throw new Error(`${provider.toUpperCase()} API key not found. Please run "/model" to configure your AI provider.`)
   }
 
-  console.log("\n🤖 Processing with AI startup coach...")
-
   const context = await createContext()
   const processedSystemPrompt = systemPrompt.replace("{{context}}", context)
 
