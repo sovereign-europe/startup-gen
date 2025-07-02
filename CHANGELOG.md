@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/sovereign-europe/startup-gen/compare/v1.4.0...v1.4.1) (2025-07-01)
+
+
+### Bug Fixes
+
+* log all commands ([1ba99e7](https://github.com/sovereign-europe/startup-gen/commit/1ba99e74a98ad65bf3747ff9409aba76682e2c70))
+
 # [1.4.0](https://github.com/sovereign-europe/startup-gen/compare/v1.3.0...v1.4.0) (2025-07-01)
 
 
