@@ -13,7 +13,7 @@ type Goal = {
 const TOTAL_BARS = 15
 
 function showProgress(goal: Goal) {
-  console.log("─".repeat(80))
+  console.log("─ ".repeat(40))
   console.log(`Your goal:          ${goal.description}`)
 
   const progressValue = goal.completed
