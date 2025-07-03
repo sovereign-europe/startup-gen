@@ -4,22 +4,45 @@ import { formatLLMResponse } from "./services/formatLLMResponse"
 import { addMessage } from "./services/conversation-history"
 import { promptWithHistory } from "./services/readline-history"
 
-function progress(): number {
-  return 1.0 / 15
+type Goal = {
+  description: string
+  target: number
+  completed: number
+}
+
+const TOTAL_BARS = 15
+
+function showProgress(goal: Goal) {
+  console.log("─".repeat(80))
+  console.log(`Your goal:          ${goal.description}`)
+
+  const progressValue = goal.completed
+  const progress = goal.completed / goal.target
+
+  const filledBars = Math.floor(progress * TOTAL_BARS)
+  const emptyBars = TOTAL_BARS - filledBars
+  const progressBar = "█".repeat(filledBars) + "░".repeat(emptyBars)
+  const percentage = Math.round(progressValue * 100)
+  console.log(`Progress:           [${progressBar}] ${percentage}% (${goal.completed}/${goal.target})`)
 }
 
 export async function startInteractiveMode() {
   console.log("Your current stage: Finding product-market fit")
-  console.log("Your goal:          Interview 15 customers")
 
-  // Show progress bar
-  const progressValue = progress()
-  const totalBars = 15
-  const filledBars = Math.floor(progressValue * totalBars)
-  const emptyBars = totalBars - filledBars
-  const progressBar = "█".repeat(filledBars) + "░".repeat(emptyBars)
-  const percentage = Math.round(progressValue * 100)
-  console.log(`Progress:           [${progressBar}] ${percentage}% (${filledBars}/15)`)
+  const customerInterviewGoal = {
+    description: "Interview potential customers",
+    target: 15,
+    completed: 1,
+  }
+
+  const coFounderGoal = {
+    description: "Find a co-founder",
+    target: 3,
+    completed: 1,
+  }
+
+  showProgress(customerInterviewGoal)
+  showProgress(coFounderGoal)
 
   console.log("─".repeat(80))
   console.log("Ask me anything about your startup, or use slash commands for specific actions.")
