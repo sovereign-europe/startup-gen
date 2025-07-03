@@ -1,7 +1,7 @@
 import fs from "fs-extra"
 import path from "path"
 import { randomUUID } from "crypto"
-import { Message, ConversationHistory } from "../types/conversation"
+import { Message, ConversationHistory } from "../types/Message"
 
 const HISTORY_DIR = ".startup"
 const HISTORY_FILE = "history.json"
