@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Box, Text, useApp } from "ink"
 import { StatusMessage } from "@inkjs/ui"
+import Divider from "./Divider"
 import { ProgressBar } from "./ProgressBar"
 import { StyledTextInput } from "./StyledTextInput"
 import { Goal } from "../Goal"
@@ -71,9 +72,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         <Text>📁 Working directory: {workingDirectory}</Text>
       </Box>
 
-      <Box>
-        <Text>{"─".repeat(80)}</Text>
-      </Box>
+      <Divider />
 
       <Box>
         <Text>Your current stage: Finding product-market fit</Text>
@@ -82,9 +81,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
       <ProgressBar goal={customerInterviewGoal} />
       <ProgressBar goal={coFounderGoal} />
 
-      <Box>
-        <Text>{"─".repeat(80)}</Text>
-      </Box>
+      <Divider />
 
       <Box flexDirection="column">
         <Text>Ask me anything about your startup, or use slash commands for specific actions.</Text>
@@ -104,9 +101,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         </Text>
       </Box>
 
-      <Box>
-        <Text>{"─".repeat(80)}</Text>
-      </Box>
+      <Divider />
 
       <Box flexDirection="column">
         {output.map((line, index) => (
