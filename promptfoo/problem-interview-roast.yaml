@@ -1,0 +1,9 @@
+prompts:
+  - file://../src/prompts/problem-interview-roast.md
+
+providers:
+  - openai:gpt-4
+
+tests:
+  - vars:
+      problemInterview: file://./fixtures/problem-interview.txt
