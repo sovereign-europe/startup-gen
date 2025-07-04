@@ -7,7 +7,7 @@ import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
 
-export const InteractiveApp: React.FC = () => {
+export const App: React.FC = () => {
   const { exit } = useApp()
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)

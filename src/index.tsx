@@ -6,7 +6,7 @@ import meow from "meow"
 import path from "path"
 import fs from "fs-extra"
 import { STARTUP_ASCII } from "./utils/ascii-art"
-import { InteractiveApp } from "./components/InteractiveApp"
+import { App } from "./components/InteractiveApp"
 
 const cli = meow(
   `
@@ -52,7 +52,7 @@ async function main() {
     console.log(`📁 Working directory: ${targetDir}`)
     console.log("─".repeat(80))
 
-    render(<InteractiveApp />)
+    render(<App />)
   } catch (error) {
     console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
     process.exit(1)
