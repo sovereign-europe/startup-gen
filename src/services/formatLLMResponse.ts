@@ -2,7 +2,8 @@ import { marked } from "marked"
 import { markedTerminal } from "marked-terminal"
 
 async function parseMarkdown(text: string): Promise<string> {
-  marked.use(markedTerminal())
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  marked.use(markedTerminal() as any)
 
   return marked.parse(text)
 }
