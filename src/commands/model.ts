@@ -2,6 +2,7 @@ import inquirer from "inquirer"
 import fs from "fs-extra"
 import path from "path"
 import chalk from "chalk"
+import { updateConfig, getAIConfig } from "../services/config"
 
 type ModelProvider = "openai" | "anthropic" | "mistral"
 
@@ -9,7 +10,6 @@ interface ProviderConfig {
   name: string
   displayName: string
   apiKeyEnvVar: string
-  modelEnvVar: string
   defaultModel: string
   apiKeyUrl: string
 }
@@ -19,7 +19,6 @@ const PROVIDERS: Record<ModelProvider, ProviderConfig> = {
     name: "openai",
     displayName: "OpenAI",
     apiKeyEnvVar: "OPENAI_API_KEY",
-    modelEnvVar: "OPENAI_MODEL",
     defaultModel: "gpt-3.5-turbo",
     apiKeyUrl: "https://platform.openai.com/api-keys",
   },
@@ -27,7 +26,6 @@ const PROVIDERS: Record<ModelProvider, ProviderConfig> = {
     name: "anthropic",
     displayName: "Anthropic",
     apiKeyEnvVar: "ANTHROPIC_API_KEY",
-    modelEnvVar: "ANTHROPIC_MODEL",
     defaultModel: "claude-3-sonnet-20240229",
     apiKeyUrl: "https://console.anthropic.com/",
   },
@@ -35,7 +33,6 @@ const PROVIDERS: Record<ModelProvider, ProviderConfig> = {
     name: "mistral",
     displayName: "Mistral AI",
     apiKeyEnvVar: "MISTRAL_API_KEY",
-    modelEnvVar: "MISTRAL_MODEL",
     defaultModel: "mistral-medium",
     apiKeyUrl: "https://console.mistral.ai/",
   },
@@ -47,7 +44,7 @@ export async function modelCommand(): Promise<void> {
 
   try {
     // Show current configuration
-    await showCurrentConfiguration()
+    showCurrentConfiguration()
 
     // Select provider
     const selectedProvider = await selectProvider()
@@ -56,44 +53,34 @@ export async function modelCommand(): Promise<void> {
     // Check if API key exists, prompt if not
     const apiKey = await ensureApiKey(provider)
 
-    // Update .env file
-    await updateEnvFile(provider, apiKey)
+    // Update startup.config.json file
+    await updateConfigFile(provider, selectedProvider)
+
+    // Update .env file with API key only
+    await updateEnvFileApiKeyOnly(provider, apiKey)
 
     console.log(`\n✅ Successfully configured ${provider.displayName} as your AI provider!`)
     console.log(`🔧 Model: ${provider.defaultModel}`)
+    console.log(`📁 Configuration saved to startup.config.json`)
     console.log("─".repeat(50))
   } catch (error) {
     console.error("❌ Error configuring model provider:", error instanceof Error ? error.message : "Unknown error")
   }
 }
 
-async function showCurrentConfiguration(): Promise<void> {
-  const envPath = path.join(process.cwd(), ".env")
+function showCurrentConfiguration(): void {
+  try {
+    const config = getAIConfig()
+    const currentProvider = PROVIDERS[config.provider]
 
-  if (!(await fs.pathExists(envPath))) {
-    console.log("📝 No configuration found. Let's set up your AI provider.")
-    return
-  }
-
-  const envContent = await fs.readFile(envPath, "utf-8")
-  const currentProvider = getCurrentProvider(envContent)
-
-  if (currentProvider) {
     console.log(`📋 Current provider: ${chalk.green(currentProvider.displayName)}`)
-    console.log(`🔧 Model: ${chalk.cyan(currentProvider.defaultModel)}`)
-  } else {
-    console.log("📝 No AI provider configured yet.")
+    console.log(`🔧 Model: ${chalk.cyan(config.models[config.provider])}`)
+    console.log(`⚙️  Max tokens: ${config.maxTokens}`)
+    console.log(`🌡️  Temperature: ${config.temperature}`)
+  } catch {
+    console.log("📝 No configuration found. Let's set up your AI provider.")
   }
   console.log("")
-}
-
-function getCurrentProvider(envContent: string): ProviderConfig | null {
-  for (const provider of Object.values(PROVIDERS)) {
-    if (envContent.includes(`${provider.apiKeyEnvVar}=`) && envContent.includes(`AI_PROVIDER=${provider.name}`)) {
-      return provider
-    }
-  }
-  return null
 }
 
 async function selectProvider(): Promise<ModelProvider> {
@@ -161,7 +148,21 @@ async function ensureApiKey(provider: ProviderConfig): Promise<string> {
   return apiKey.trim()
 }
 
-async function updateEnvFile(provider: ProviderConfig, apiKey: string): Promise<void> {
+async function updateConfigFile(provider: ProviderConfig, selectedProvider: ModelProvider): Promise<void> {
+  const currentConfig = getAIConfig()
+  updateConfig({
+    ai: {
+      ...currentConfig,
+      provider: selectedProvider,
+      models: {
+        ...currentConfig.models,
+        [selectedProvider]: provider.defaultModel,
+      },
+    },
+  })
+}
+
+async function updateEnvFileApiKeyOnly(provider: ProviderConfig, apiKey: string): Promise<void> {
   const envPath = path.join(process.cwd(), ".env")
   let envContent = ""
 
@@ -170,35 +171,23 @@ async function updateEnvFile(provider: ProviderConfig, apiKey: string): Promise<
     envContent = await fs.readFile(envPath, "utf-8")
   }
 
-  // Remove existing provider configurations
-  const linesToRemove = [
-    "AI_PROVIDER=",
-    "OPENAI_API_KEY=",
-    "OPENAI_MODEL=",
-    "ANTHROPIC_API_KEY=",
-    "ANTHROPIC_MODEL=",
-    "MISTRAL_API_KEY=",
-    "MISTRAL_MODEL=",
-  ]
+  // Remove existing API key configurations (but keep other env vars)
+  const linesToRemove = ["OPENAI_API_KEY=", "ANTHROPIC_API_KEY=", "MISTRAL_API_KEY="]
 
   envContent = envContent
     .split("\n")
     .filter((line) => !linesToRemove.some((prefix) => line.startsWith(prefix)))
     .join("\n")
 
-  // Add new configuration
-  const newConfig = [
-    `AI_PROVIDER=${provider.name}`,
-    `${provider.apiKeyEnvVar}=${apiKey}`,
-    `${provider.modelEnvVar}=${provider.defaultModel}`,
-  ]
+  // Add new API key
+  const newConfig = `${provider.apiKeyEnvVar}=${apiKey}`
 
   // Ensure we don't have trailing newlines before adding new content
   envContent = envContent.trim()
   if (envContent) {
     envContent += "\n"
   }
-  envContent += newConfig.join("\n") + "\n"
+  envContent += newConfig + "\n"
 
   // Write updated .env file
   await fs.writeFile(envPath, envContent)

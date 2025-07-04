@@ -6,7 +6,7 @@ import meow from "meow"
 import path from "path"
 import fs from "fs-extra"
 import { STARTUP_ASCII } from "./utils/ascii-art"
-import { App } from "./components/InteractiveApp"
+import { App } from "./components/App"
 
 const cli = meow(
   `

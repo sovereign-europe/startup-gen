@@ -65,6 +65,7 @@ export default defineConfig({
         "@inkjs/ui",
         "chokidar",
         "meow",
+        "zod",
       ],
       output: {
         interop: "auto",

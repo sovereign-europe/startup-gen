@@ -5,25 +5,30 @@ import { mistral } from "@ai-sdk/mistral"
 import { tool } from "ai"
 import { createOrUpdateFile } from "../services/tools/createOrUpdateFile"
 import { convertMdToPdf } from "../services/tools/mdToPdf"
+import { getAIConfig } from "../services/config"
 
 export function getLLMModel() {
-  const provider = process.env.AI_PROVIDER || "openai"
+  const config = getAIConfig()
+  const provider = config.provider
 
   switch (provider) {
     case "anthropic":
-      return anthropic(process.env.ANTHROPIC_MODEL || "claude-3-sonnet-20240229")
+      return anthropic(config.models.anthropic)
     case "mistral":
-      return mistral(process.env.MISTRAL_MODEL || "mistral-medium")
+      return mistral(config.models.mistral)
     case "openai":
     default:
-      return openai(process.env.OPENAI_MODEL || "gpt-3.5-turbo")
+      return openai(config.models.openai)
   }
 }
 
-export const LLM_CONFIG = {
-  maxTokens: 500, // Reasonable limit for console output
-  temperature: 0.7, // Balanced creativity and consistency
-} as const
+export function getLLMConfig() {
+  const config = getAIConfig()
+  return {
+    maxTokens: config.maxTokens,
+    temperature: config.temperature,
+  }
+}
 
 export const LLM_TOOLS = {
   createOrUpdateFile: tool({
