@@ -4,6 +4,8 @@ import { formatLLMResponse } from "./services/formatLLMResponse"
 import { addMessage } from "./services/conversation-history"
 import { promptWithHistory } from "./services/readline-history"
 import { Goal } from "./Goal"
+import * as fs from "fs"
+import * as path from "path"
 
 const TOTAL_BARS = 15
 
@@ -22,7 +24,16 @@ function showProgress(goal: Goal) {
 }
 
 function completedCustomerInterviews(): number {
-  return 1
+  try {
+    const interviewsPath = path.join(process.cwd(), "customer-discovery", "interviews")
+    if (!fs.existsSync(interviewsPath)) {
+      return 0
+    }
+    const files = fs.readdirSync(interviewsPath)
+    return files.filter((file) => file.endsWith(".md") || file.endsWith(".txt")).length
+  } catch {
+    return 0
+  }
 }
 
 export async function startInteractiveMode() {
