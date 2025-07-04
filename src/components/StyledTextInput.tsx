@@ -16,12 +16,10 @@ export const StyledTextInput: React.FC<StyledTextInputProps> = ({
   const [, setValue] = useState("")
 
   return (
-    <Box>
-      <Box borderStyle="single" borderColor="grey" paddingLeft={1} paddingRight={1} width={80}>
-        <Text color="white">&gt; </Text>
-        <Box flexDirection="column" gap={1}>
-          <TextInput placeholder={placeholder} onChange={setValue} onSubmit={onSubmit} suggestions={commands} />
-        </Box>
+    <Box borderStyle="single" borderColor="grey" paddingLeft={1} paddingRight={1} width="100%">
+      <Text color="white">&gt; </Text>
+      <Box flexDirection="column" gap={1}>
+        <TextInput placeholder={placeholder} onChange={setValue} onSubmit={onSubmit} suggestions={commands} />
       </Box>
     </Box>
   )

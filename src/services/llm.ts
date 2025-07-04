@@ -6,6 +6,21 @@ import { getRecentConversationForModel } from "./conversation-history"
 import { getAIConfig } from "./config"
 import dotenv from "dotenv"
 
+let tokenCount = { sent: 0, received: 0 }
+
+export function updateTokenCount(promptTokens: number, completionTokens: number) {
+  tokenCount.sent += promptTokens
+  tokenCount.received += completionTokens
+}
+
+export function getTokenCount() {
+  return tokenCount
+}
+
+export function resetTokenCount() {
+  tokenCount = { sent: 0, received: 0 }
+}
+
 dotenv.config()
 
 export async function processWithLLM(userInput: string): Promise<string> {
@@ -44,6 +59,11 @@ export async function processWithLLM(userInput: string): Promise<string> {
     ...getLLMConfig(),
     tools: LLM_TOOLS,
   })
+
+  // Update token count in global state
+  if (result.usage) {
+    updateTokenCount(result.usage.promptTokens || 0, result.usage.completionTokens || 0)
+  }
 
   return result.text
 }

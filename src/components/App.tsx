@@ -9,6 +9,7 @@ import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
 import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
+import { getTokenCount } from "../services/llm"
 import { STARTUP_ASCII } from "../utils/ascii-art"
 
 interface AppProps {
@@ -21,6 +22,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const [isProcessing, setIsProcessing] = useState(false)
   const [customerInterviewCount, setCustomerInterviewCount] = useState(completedCustomerInterviews())
   const [modelValidation, setModelValidation] = useState<ModelValidationResult | null>(null)
+  const [tokenCount, setTokenCount] = useState({ sent: 0, received: 0 })
 
   const customerInterviewGoal: Goal = {
     description: "Interview potential customers",
@@ -60,6 +62,8 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
     try {
       const result = await processInteractiveInput(userInput)
       setOutput((prev) => [...prev, result])
+      // Update token count display
+      setTokenCount(getTokenCount())
     } catch (error) {
       setOutput((prev) => [...prev, `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`])
     } finally {
@@ -68,7 +72,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   }
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" width="80">
       <Divider />
       <Text>{STARTUP_ASCII}</Text>
       <Text>🚀 CLI tool for early-stage startups to build lean startup methodology</Text>
@@ -134,7 +138,9 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
           </StatusMessage>
         )}
         <Spacer />
-        <Text>Tokens</Text>
+        <Text>
+          Tokens: {tokenCount.sent} sent / {tokenCount.received} received
+        </Text>
       </Box>
     </Box>
   )
