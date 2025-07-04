@@ -20,7 +20,7 @@ export default defineConfig({
         'readline', 'zlib', 'string_decoder', 'querystring', 'punycode', 'dns', 'fs/promises',
         'node:process', 'node:fs', 'node:path', 'node:os', 'node:crypto', 'node:util', 'node:stream',
         'mustache', 'marked-terminal', 'md-to-pdf', 'ai', '@ai-sdk/anthropic', '@ai-sdk/mistral', '@ai-sdk/openai',
-        'chalk'
+        'chalk', '@inkjs/ui'
       ],
       output: {
         interop: 'auto'

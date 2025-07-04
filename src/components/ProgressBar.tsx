@@ -1,17 +1,14 @@
 import React from "react"
 import { Box, Text } from "ink"
+import { ProgressBar as InkProgressBar } from "@inkjs/ui"
 import { Goal } from "../Goal"
 
 interface ProgressBarProps {
   goal: Goal
-  totalBars?: number
 }
 
-export const ProgressBar: React.FC<ProgressBarProps> = ({ goal, totalBars = 15 }) => {
+export const ProgressBar: React.FC<ProgressBarProps> = ({ goal }) => {
   const progress = goal.completed / goal.target
-  const filledBars = Math.floor(progress * totalBars)
-  const emptyBars = totalBars - filledBars
-  const progressBar = "█".repeat(filledBars) + "░".repeat(emptyBars)
   const percentage = Math.round(progress * 100)
 
   return (
@@ -25,8 +22,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ goal, totalBars = 15 }
       </Box>
       <Box>
         <Text>Progress: </Text>
+        <Box width={30}>
+          <InkProgressBar value={percentage} />
+        </Box>
         <Text>
-          [{progressBar}] {percentage}% ({goal.completed}/{goal.target})
+          {" "}
+          {percentage}% ({goal.completed}/{goal.target})
         </Text>
       </Box>
     </Box>
