@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react"
 import { Box, Text, useApp } from "ink"
+import { StatusMessage } from "@inkjs/ui"
 import { ProgressBar } from "./ProgressBar"
 import { StyledTextInput } from "./StyledTextInput"
 import { Goal } from "../Goal"
 import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
+import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
 
 interface AppProps {
   workingDirectory: string
@@ -16,6 +18,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [customerInterviewCount, setCustomerInterviewCount] = useState(completedCustomerInterviews())
+  const [modelValidation, setModelValidation] = useState<ModelValidationResult | null>(null)
 
   const customerInterviewGoal: Goal = {
     description: "Interview potential customers",
@@ -33,6 +36,10 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
     const cleanup = watchCustomerInterviews((count) => {
       setCustomerInterviewCount(count)
     })
+
+    // Validate model configuration on startup
+    const validation = validateModelConfiguration()
+    setModelValidation(validation)
 
     return cleanup
   }, [])
@@ -119,6 +126,12 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
           <StyledTextInput placeholder="Ask me anything about your startup..." onSubmit={handleSubmit} />
         )}
       </Box>
+      {modelValidation && (
+        <StatusMessage variant={modelValidation.isValid ? "success" : "error"}>
+          {modelValidation.message}
+          {modelValidation.details && ` - ${modelValidation.details}`}
+        </StatusMessage>
+      )}
     </Box>
   )
 }
