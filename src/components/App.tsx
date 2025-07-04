@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Box, Text, useApp } from "ink"
-import { TextInput } from "@inkjs/ui"
 import { ProgressBar } from "./ProgressBar"
+import { StyledTextInput } from "./StyledTextInput"
 import { Goal } from "../Goal"
 import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
@@ -109,9 +109,14 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
       <Box>
         {isProcessing ? (
-          <Text>Processing...</Text>
+          <Box>
+            <Text color="white">&gt; </Text>
+            <Box borderStyle="single" borderColor="white" paddingLeft={1} paddingRight={1} width={60}>
+              <Text color="yellow">Processing...</Text>
+            </Box>
+          </Box>
         ) : (
-          <TextInput placeholder="Ask me anything about your startup..." onSubmit={handleSubmit} />
+          <StyledTextInput placeholder="Ask me anything about your startup..." onSubmit={handleSubmit} />
         )}
       </Box>
     </Box>
