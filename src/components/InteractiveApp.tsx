@@ -1,5 +1,6 @@
 import React, { useState } from "react"
-import { Box, Text, useInput, useApp } from "ink"
+import { Box, Text, useApp } from "ink"
+import { TextInput } from "@inkjs/ui"
 import { ProgressBar } from "./ProgressBar"
 import { Goal } from "../Goal"
 import { processInteractiveInput } from "../services/interactiveService"
@@ -8,7 +9,6 @@ import { getCommandNames } from "../commands/registry"
 
 export const InteractiveApp: React.FC = () => {
   const { exit } = useApp()
-  const [input, setInput] = useState("")
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -24,39 +24,29 @@ export const InteractiveApp: React.FC = () => {
     completed: 1,
   }
 
-  useInput(async (inputChar, key) => {
-    if (key.return) {
-      if (input.trim() === "") return
+  const handleSubmit = async (userInput: string) => {
+    if (userInput.trim() === "") return
 
-      const userInput = input.trim()
-      setInput("")
-      setOutput((prev) => [...prev, `> ${userInput}`])
+    setOutput((prev) => [...prev, `> ${userInput}`])
 
-      if (userInput.toLowerCase() === "/exit") {
-        exit()
-        return
-      }
-
-      setIsProcessing(true)
-      try {
-        const result = await processInteractiveInput(userInput)
-        setOutput((prev) => [...prev, result])
-      } catch (error) {
-        setOutput((prev) => [...prev, `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`])
-      } finally {
-        setIsProcessing(false)
-      }
-    } else if (key.ctrl && inputChar === "c") {
+    if (userInput.toLowerCase() === "/exit") {
       exit()
-    } else if (key.backspace || key.delete) {
-      setInput((prev) => prev.slice(0, -1))
-    } else if (inputChar) {
-      setInput((prev) => prev + inputChar)
+      return
     }
-  })
+
+    setIsProcessing(true)
+    try {
+      const result = await processInteractiveInput(userInput)
+      setOutput((prev) => [...prev, result])
+    } catch (error) {
+      setOutput((prev) => [...prev, `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`])
+    } finally {
+      setIsProcessing(false)
+    }
+  }
 
   return (
-    <Box flexDirection="column">
+    <Box flexDirection="column" gap={1}>
       <Box>
         <Text>Your current stage: Finding product-market fit</Text>
       </Box>
@@ -96,7 +86,13 @@ export const InteractiveApp: React.FC = () => {
         ))}
       </Box>
 
-      <Box>{isProcessing ? <Text>Processing...</Text> : <Text>&gt; {input}</Text>}</Box>
+      <Box>
+        {isProcessing ? (
+          <Text>Processing...</Text>
+        ) : (
+          <TextInput placeholder="Ask me anything about your startup..." onSubmit={handleSubmit} />
+        )}
+      </Box>
     </Box>
   )
 }
