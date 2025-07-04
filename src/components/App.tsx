@@ -85,8 +85,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
       <ProgressBar goal={customerInterviewGoal} />
       <ProgressBar goal={coFounderGoal} />
-
-      <Divider />
+      <Divider width={80} />
 
       <Box flexDirection="column">
         <Text>Ask me anything about your startup, or use slash commands for specific actions.</Text>

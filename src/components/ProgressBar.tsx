@@ -2,6 +2,7 @@ import React from "react"
 import { Box, Text } from "ink"
 import { ProgressBar as InkProgressBar } from "@inkjs/ui"
 import { Goal } from "../Goal"
+import Divider from "./Divider"
 
 interface ProgressBarProps {
   goal: Goal
@@ -13,12 +14,10 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({ goal }) => {
 
   return (
     <Box flexDirection="column">
-      <Box>
-        <Text>{"─ ".repeat(40)}</Text>
-      </Box>
+      <Divider dividerChar="-" />
       <Box>
         <Text>Your goal: </Text>
-        <Text>{goal.description}</Text>
+        <Text color="green">{goal.description}</Text>
       </Box>
       <Box>
         <Text>Progress: </Text>
