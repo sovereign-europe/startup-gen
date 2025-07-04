@@ -7,7 +7,11 @@ import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
 
-export const App: React.FC = () => {
+interface AppProps {
+  workingDirectory: string
+}
+
+export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const { exit } = useApp()
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
@@ -56,6 +60,14 @@ export const App: React.FC = () => {
 
   return (
     <Box flexDirection="column" gap={1}>
+      <Box>
+        <Text>📁 Working directory: {workingDirectory}</Text>
+      </Box>
+
+      <Box>
+        <Text>{"─".repeat(80)}</Text>
+      </Box>
+
       <Box>
         <Text>Your current stage: Finding product-market fit</Text>
       </Box>

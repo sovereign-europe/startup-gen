@@ -49,10 +49,7 @@ async function main() {
 
     process.chdir(targetDir)
 
-    console.log(`📁 Working directory: ${targetDir}`)
-    console.log("─".repeat(80))
-
-    render(<App />)
+    render(<App workingDirectory={targetDir} />)
   } catch (error) {
     console.error("❌ Error:", error instanceof Error ? error.message : "Unknown error")
     process.exit(1)
