@@ -35,16 +35,6 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
       await modelCommand()
     },
   },
-  help: {
-    name: "help",
-    description: "Show this help information",
-    icon: "ℹ️",
-    category: "system",
-    handler: () => {
-      // This will be implemented in the main file
-      throw new Error("Help handler should be implemented in main file")
-    },
-  },
   exit: {
     name: "exit",
     description: "Exit the application",
@@ -57,7 +47,6 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
   },
 }
 
-// Utility functions for working with the registry
 export function getCommand(name: string): CommandDefinition | undefined {
   return COMMAND_REGISTRY[name]
 }
@@ -76,55 +65,4 @@ export function isValidCommand(name: string): boolean {
 
 export function getAllCommands(): CommandDefinition[] {
   return Object.values(COMMAND_REGISTRY)
-}
-
-export function findSubCommand(commandName: string, subCommandName: string): SubCommandDefinition | undefined {
-  const command = getCommand(commandName)
-  return command?.subCommands?.find((sub) => sub.name === subCommandName)
-}
-
-export function generateHelpText(): string {
-  const lines: string[] = []
-
-  lines.push("\n📖 Available Slash Commands:")
-
-  // Group by category
-  const categories = ["core", "build", "config", "system"] as const
-
-  for (const category of categories) {
-    const commands = getCommandsByCategory(category)
-    if (commands.length === 0) continue
-
-    for (const command of commands) {
-      lines.push(`  ${command.icon} /${command.name}  - ${command.description}`)
-
-      // Add sub-commands if they exist
-      if (command.subCommands) {
-        for (const subCmd of command.subCommands) {
-          lines.push(`    • /${command.name} ${subCmd.name} - ${subCmd.description}`)
-        }
-      }
-    }
-  }
-
-  lines.push("\nInteractive Input:")
-  lines.push("  🤖 <text> - Ask the AI startup coach anything about your business")
-  lines.push("  💬 Use slash commands (/) like Claude Code for specific actions")
-
-  lines.push("\nCLI Options:")
-  lines.push("  -d, --directory <dir>  Specify working directory (default: current directory)")
-  lines.push("  -h, --help            Show help information")
-
-  lines.push("\nUsage:")
-  lines.push("  startup                            # Interactive mode in current directory")
-  lines.push("  startup <command>                  # Direct command execution (without /)")
-  lines.push("  startup -d /path/to/dir            # Interactive mode in custom directory")
-  lines.push("  startup -d /path/to/dir <command>  # Direct command in custom directory")
-
-  lines.push("\nInteractive Experience:")
-  lines.push("  AI-powered startup coaching - ask questions or use slash commands")
-  lines.push("  Similar to Claude Code interface with continuous input until you exit")
-  lines.push("  Working directory is set once at startup and cannot be changed")
-
-  return lines.join("\n")
 }
