@@ -66,7 +66,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <Box flexDirection="column">
       <Box>
         <Text>📁 Working directory: {workingDirectory}</Text>
       </Box>
@@ -123,7 +123,11 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
             </Box>
           </Box>
         ) : (
-          <StyledTextInput placeholder="Ask me anything about your startup..." onSubmit={handleSubmit} />
+          <StyledTextInput
+            placeholder="Ask me anything about your startup..."
+            onSubmit={handleSubmit}
+            commands={getCommandNames().map((name) => `/${name}`)}
+          />
         )}
       </Box>
       {modelValidation && (
