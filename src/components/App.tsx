@@ -90,7 +90,6 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
       <Box flexDirection="column">
         <Text>Ask me anything about your startup, or use slash commands for specific actions.</Text>
-        <Text>Type '/exit' or use Ctrl+C to leave.</Text>
         <Text></Text>
         <Text>🎯 Examples:</Text>
         <Text> 'How do I validate my startup idea?'</Text>
@@ -105,8 +104,6 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
             .join(", ")}
         </Text>
       </Box>
-
-      <Divider />
 
       <Box flexDirection="column">
         {output.map((line, index) => (

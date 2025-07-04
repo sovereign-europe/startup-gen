@@ -17,7 +17,7 @@ export const StyledTextInput: React.FC<StyledTextInputProps> = ({
 
   return (
     <Box>
-      <Box borderStyle="single" borderColor="white" paddingLeft={1} paddingRight={1} width={80}>
+      <Box borderStyle="single" borderColor="grey" paddingLeft={1} paddingRight={1} width={80}>
         <Text color="white">&gt; </Text>
         <Box flexDirection="column" gap={1}>
           <TextInput placeholder={placeholder} onChange={setValue} onSubmit={onSubmit} suggestions={commands} />
