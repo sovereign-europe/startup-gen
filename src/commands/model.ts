@@ -26,7 +26,7 @@ const PROVIDERS: Record<ModelProvider, ProviderConfig> = {
     name: "anthropic",
     displayName: "Anthropic",
     apiKeyEnvVar: "ANTHROPIC_API_KEY",
-    defaultModel: "claude-3-sonnet-20240229",
+    defaultModel: "claude-sonnet-4-20250514",
     apiKeyUrl: "https://console.anthropic.com/",
   },
   mistral: {
