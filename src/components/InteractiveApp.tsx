@@ -1,21 +1,22 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Box, Text, useApp } from "ink"
 import { TextInput } from "@inkjs/ui"
 import { ProgressBar } from "./ProgressBar"
 import { Goal } from "../Goal"
 import { processInteractiveInput } from "../services/interactiveService"
-import { completedCustomerInterviews } from "../services/goalService"
+import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
 
 export const InteractiveApp: React.FC = () => {
   const { exit } = useApp()
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
+  const [customerInterviewCount, setCustomerInterviewCount] = useState(completedCustomerInterviews())
 
   const customerInterviewGoal: Goal = {
     description: "Interview potential customers",
     target: 15,
-    completed: completedCustomerInterviews(),
+    completed: customerInterviewCount,
   }
 
   const coFounderGoal: Goal = {
@@ -23,6 +24,14 @@ export const InteractiveApp: React.FC = () => {
     target: 3,
     completed: 1,
   }
+
+  useEffect(() => {
+    const cleanup = watchCustomerInterviews((count) => {
+      setCustomerInterviewCount(count)
+    })
+
+    return cleanup
+  }, [])
 
   const handleSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return
