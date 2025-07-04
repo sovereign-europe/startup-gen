@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Box, Text, useApp } from "ink"
+import { Box, Spacer, Text, useApp } from "ink"
 import { StatusMessage } from "@inkjs/ui"
 import Divider from "./Divider"
 import { ProgressBar } from "./ProgressBar"
@@ -126,12 +126,16 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
           />
         )}
       </Box>
-      {modelValidation && (
-        <StatusMessage variant={modelValidation.isValid ? "success" : "error"}>
-          {modelValidation.message}
-          {modelValidation.details && ` - ${modelValidation.details}`}
-        </StatusMessage>
-      )}
+      <Box>
+        {modelValidation && (
+          <StatusMessage variant={modelValidation.isValid ? "success" : "error"}>
+            {modelValidation.message}
+            {modelValidation.details && ` - ${modelValidation.details}`}
+          </StatusMessage>
+        )}
+        <Spacer />
+        <Text>Tokens</Text>
+      </Box>
     </Box>
   )
 }
