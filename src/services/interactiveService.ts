@@ -1,7 +1,7 @@
-import { findSubCommand, generateHelpText, getCommand, getCommandNames, isValidCommand } from "../commands/registry"
+import { findSubCommand, getCommand, getCommandNames, isValidCommand } from "../commands/registry"
 import { processWithLLM } from "./llm"
 import { formatLLMResponse } from "./formatLLMResponse"
-import { addMessage } from "./conversation-history"
+import { addMessage as addMessageToHistory } from "./conversation-history"
 
 export async function processInteractiveInput(input: string): Promise<string> {
   const lowerInput = input.toLowerCase()
@@ -11,21 +11,15 @@ export async function processInteractiveInput(input: string): Promise<string> {
     const [commandName, ...args] = commandPart.split(" ")
 
     // Save slash command to conversation history
-    await addMessage("user", input)
+    await addMessageToHistory("user", input)
 
     if (isValidCommand(commandName)) {
       const commandDef = getCommand(commandName)!
       const commandOutput = `🚀 Executing command: /${commandName}`
 
-      if (commandName === "help") {
-        const helpText = generateHelpText()
-        await addMessage("assistant", "Help information displayed")
-        return `${commandOutput}\n\n${helpText}`
-      } else {
-        await commandDef.handler()
-        await addMessage("assistant", `Executed command: ${commandName}`)
-        return `${commandOutput}\n\n✅ Command executed successfully`
-      }
+      await commandDef.handler()
+      await addMessageToHistory("assistant", `Executed command: ${commandName}`)
+      return `${commandOutput}\n\n✅ Command executed successfully`
     }
 
     if (args.length > 0) {
@@ -39,7 +33,7 @@ export async function processInteractiveInput(input: string): Promise<string> {
           const commandOutput = `🚀 Executing command: /${fullCommand}`
 
           await subCommand.handler(subCommandName)
-          await addMessage("assistant", `Executed command: ${fullCommand}`)
+          await addMessageToHistory("assistant", `Executed command: ${fullCommand}`)
           return `${commandOutput}\n\n✅ Command executed successfully`
         }
       }
@@ -51,7 +45,7 @@ export async function processInteractiveInput(input: string): Promise<string> {
       .join(", ")}`
     const helpHint = "Type /help to see all available commands."
 
-    await addMessage(
+    await addMessageToHistory(
       "assistant",
       `Unknown command: ${commandPart}. Available commands: ${getCommandNames().join(", ")}`,
     )
@@ -60,14 +54,14 @@ export async function processInteractiveInput(input: string): Promise<string> {
   }
 
   // Save user input to conversation history
-  await addMessage("user", input)
+  await addMessageToHistory("user", input)
 
   try {
     const response = await processWithLLM(input)
     const formattedResponse = await formatLLMResponse(response)
 
     // Save assistant response to conversation history
-    await addMessage("assistant", response)
+    await addMessageToHistory("assistant", response)
 
     return formattedResponse
   } catch (error) {
@@ -77,7 +71,7 @@ export async function processInteractiveInput(input: string): Promise<string> {
       .join(", ")}\n   Type '/help' to see all available commands.`
 
     // Save error as assistant response to conversation history
-    await addMessage("assistant", `Error: ${error}`)
+    await addMessageToHistory("assistant", `Error: ${error}`)
 
     return `${errorMessage}${helpText}`
   }
