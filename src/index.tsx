@@ -5,7 +5,7 @@ import { render } from "ink"
 import meow from "meow"
 import path from "path"
 import fs from "fs-extra"
-import { STARTUP_ASCII } from "./utils/ascii-art"
+
 import { App } from "./components/App"
 
 const cli = meow(
@@ -39,14 +39,8 @@ const cli = meow(
 
 async function main() {
   try {
-    console.log("─".repeat(80))
-    console.log(STARTUP_ASCII)
-    console.log("🚀 CLI tool for early-stage startups to build lean startup methodology")
-    console.log("─".repeat(80))
-
     const targetDir = cli.flags.directory ? path.resolve(cli.flags.directory) : process.cwd()
     await fs.ensureDir(targetDir)
-
     process.chdir(targetDir)
 
     render(<App workingDirectory={targetDir} />)

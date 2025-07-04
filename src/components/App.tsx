@@ -9,6 +9,7 @@ import { processInteractiveInput } from "../services/interactiveService"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
 import { getCommandNames } from "../commands/registry"
 import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
+import { STARTUP_ASCII } from "../utils/ascii-art"
 
 interface AppProps {
   workingDirectory: string
@@ -68,6 +69,10 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
   return (
     <Box flexDirection="column">
+      <Divider />
+      <Text>{STARTUP_ASCII}</Text>
+      <Text>🚀 CLI tool for early-stage startups to build lean startup methodology</Text>
+      <Divider />
       <Box>
         <Text>📁 Working directory: {workingDirectory}</Text>
       </Box>
