@@ -3,12 +3,7 @@ import { processWithLLM } from "./services/llm"
 import { formatLLMResponse } from "./services/formatLLMResponse"
 import { addMessage } from "./services/conversation-history"
 import { promptWithHistory } from "./services/readline-history"
-
-type Goal = {
-  description: string
-  target: number
-  completed: number
-}
+import { Goal } from "./Goal"
 
 const TOTAL_BARS = 15
 
@@ -26,13 +21,17 @@ function showProgress(goal: Goal) {
   console.log(`Progress:           [${progressBar}] ${percentage}% (${goal.completed}/${goal.target})`)
 }
 
+function completedCustomerInterviews(): number {
+  return 1
+}
+
 export async function startInteractiveMode() {
   console.log("Your current stage: Finding product-market fit")
 
   const customerInterviewGoal = {
     description: "Interview potential customers",
     target: 15,
-    completed: 1,
+    completed: completedCustomerInterviews(),
   }
 
   const coFounderGoal = {
