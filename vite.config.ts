@@ -63,6 +63,7 @@ export default defineConfig({
         "@ai-sdk/openai",
         "chalk",
         "@inkjs/ui",
+        "chokidar",
       ],
       output: {
         interop: "auto",
