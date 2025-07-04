@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/sovereign-europe/startup-gen/compare/v1.4.1...v1.5.0) (2025-07-04)
+
+
+### Features
+
+* add tool to create pdf files ([1de5c94](https://github.com/sovereign-europe/startup-gen/commit/1de5c94d18d274e9aa934601a17043e850fe3621))
+
 ## [1.4.1](https://github.com/sovereign-europe/startup-gen/compare/v1.4.0...v1.4.1) (2025-07-01)
 
 
