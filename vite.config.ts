@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.ts"),
+      entry: resolve(__dirname, "src/index.tsx"),
       formats: ["es"],
       fileName: "index",
     },
@@ -64,6 +64,7 @@ export default defineConfig({
         "chalk",
         "@inkjs/ui",
         "chokidar",
+        "meow",
       ],
       output: {
         interop: "auto",

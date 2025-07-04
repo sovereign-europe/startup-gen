@@ -10,7 +10,7 @@
   "scripts": {
     "prepare": "npm run build && husky",
     "build": "vite build",
-    "dev": "vite-node -w ./src/index.ts",
+    "dev": "vite-node -w ./src/index.tsx",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "typecheck": "tsc --noEmit",
@@ -44,6 +44,7 @@
     "inquirer": "^12.6.3",
     "marked-terminal": "^7.3.0",
     "md-to-pdf": "^5.2.4",
+    "meow": "^13.2.0",
     "mustache": "^4.2.0",
     "react": "^19.1.0"
   },
