@@ -42,20 +42,6 @@ export async function initCommand() {
 
     console.log("\n✅ Project initialized successfully!")
     console.log(`⚙️  Auto-commit is ${autoCommit ? "enabled" : "disabled"} (can be changed in startup.config.json)`)
-
-    const runCustomerSegment = await inquirer.prompt([
-      {
-        type: "confirm",
-        name: "proceed",
-        message: "Would you like to run the customer-segment command now?",
-        default: true,
-      },
-    ])
-
-    if (runCustomerSegment.proceed) {
-      const { generateCustomerSegment } = await import("./customer-segment")
-      await generateCustomerSegment()
-    }
   } catch (error) {
     console.error("Error during initialization:", error)
     process.exit(1)

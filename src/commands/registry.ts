@@ -1,5 +1,4 @@
 import { initCommand } from "./init"
-import { buildCommand } from "./build"
 import { modelCommand } from "./model"
 
 export interface CommandDefinition {
@@ -26,59 +25,6 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
     handler: async () => {
       await initCommand()
     },
-  },
-  build: {
-    name: "build",
-    description: "Build startup components (problem-analysis, customer-segment, etc.)",
-    icon: "🚀",
-    category: "build",
-    handler: async () => {
-      await buildCommand.run()
-    },
-    subCommands: [
-      {
-        name: "customer-segment",
-        description: "Create customer personas",
-        handler: async () => {
-          await buildCommand.run("customer-segment")
-        },
-      },
-      {
-        name: "problem-analysis",
-        description: "Identify top problems",
-        handler: async () => {
-          await buildCommand.run("problem-analysis")
-        },
-      },
-      {
-        name: "market-analysis",
-        description: "Analyze market opportunity",
-        handler: async () => {
-          await buildCommand.run("market-analysis")
-        },
-      },
-      {
-        name: "value-proposition",
-        description: "Define your unique value",
-        handler: async () => {
-          await buildCommand.run("value-proposition")
-        },
-      },
-      {
-        name: "business-model",
-        description: "Design your business model",
-        handler: async () => {
-          await buildCommand.run("business-model")
-        },
-      },
-      {
-        name: "go-to-market",
-        description: "Plan your launch",
-        handler: async () => {
-          await buildCommand.run("go-to-market")
-        },
-      },
-    ],
   },
   model: {
     name: "model",
