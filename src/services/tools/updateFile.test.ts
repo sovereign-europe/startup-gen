@@ -1,6 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import fs from "fs-extra"
 import path from "path"
+
+import fs from "fs-extra"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+
 import { createOrUpdateFile } from "./createOrUpdateFile"
 
 vi.mock("fs-extra")

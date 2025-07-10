@@ -1,7 +1,8 @@
 import { getCommand, getCommandNames, isValidCommand } from "../commands/registry"
-import { processWithLLM } from "./llm"
-import { formatLLMResponse } from "./formatLLMResponse"
+
 import { addMessage as addMessageToHistory } from "./conversation-history"
+import { formatLLMResponse } from "./formatLLMResponse"
+import { processWithLLM } from "./llm"
 
 export async function processInteractiveInput(input: string): Promise<string> {
   const lowerInput = input.toLowerCase()

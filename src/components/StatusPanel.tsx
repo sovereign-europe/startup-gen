@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { ProgressBar } from "./ProgressBar"
-import { Box, Text } from "ink"
-import Divider from "./Divider"
 
-import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
+import { Box, Text } from "ink"
 
 import { Goal } from "../Goal"
+import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
+
+import Divider from "./Divider"
+import { ProgressBar } from "./ProgressBar"
 
 export const StatusPanel = () => {
   const [customerInterviewCount, setCustomerInterviewCount] = useState(completedCustomerInterviews())

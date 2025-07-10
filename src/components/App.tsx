@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react"
-import { Box, Spacer, Text, useApp } from "ink"
+
 import { StatusMessage } from "@inkjs/ui"
-import Divider from "./Divider"
-import { StyledTextInput } from "./StyledTextInput"
-import { processInteractiveInput } from "../services/interactiveService"
+import { Box, Spacer, Text, useApp } from "ink"
 
 import { getCommandNames } from "../commands/registry"
-import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
+import { processInteractiveInput } from "../services/interactiveService"
 import { getTokenCount } from "../services/llm"
+import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
 import { STARTUP_ASCII } from "../utils/ascii-art"
+
+import Divider from "./Divider"
 import { StatusPanel } from "./StatusPanel"
+import { StyledTextInput } from "./StyledTextInput"
 
 interface AppProps {
   workingDirectory: string

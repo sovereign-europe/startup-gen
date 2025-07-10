@@ -1,7 +1,10 @@
 import React from "react"
-import { Box, Text } from "ink"
+
 import { ProgressBar as InkProgressBar } from "@inkjs/ui"
+import { Box, Text } from "ink"
+
 import { Goal } from "../Goal"
+
 import Divider from "./Divider"
 
 interface ProgressBarProps {

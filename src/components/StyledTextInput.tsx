@@ -1,6 +1,7 @@
 import React, { useState } from "react"
-import { Box, Text } from "ink"
+
 import { TextInput } from "@inkjs/ui"
+import { Box, Text } from "ink"
 
 interface StyledTextInputProps {
   placeholder?: string

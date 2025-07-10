@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import path from "path"
+
 import React from "react"
+
+import fs from "fs-extra"
 import { render } from "ink"
 import meow from "meow"
-import path from "path"
-import fs from "fs-extra"
 
 import { App } from "./components/App"
 

@@ -1,7 +1,9 @@
-import inquirer from "inquirer"
-import fs from "fs-extra"
 import path from "path"
+
 import chalk from "chalk"
+import fs from "fs-extra"
+import inquirer from "inquirer"
+
 import { updateConfig, getAIConfig } from "../services/config"
 
 type ModelProvider = "openai" | "anthropic" | "mistral"

@@ -1,5 +1,6 @@
-import fs from "fs-extra"
 import path from "path"
+
+import fs from "fs-extra"
 
 export async function createContext(rootDir: string = process.cwd()): Promise<string> {
   const validExtensions = [".txt", ".csv", ".md"]

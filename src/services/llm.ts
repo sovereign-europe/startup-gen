@@ -1,10 +1,12 @@
 import { generateText } from "ai"
+import dotenv from "dotenv"
+
 import { systemPrompt } from "../prompts/SYSTEM"
 import { createContext } from "../utils/createContext"
 import { getLLMModel, getLLMConfig, LLM_TOOLS } from "../utils/llm-config"
-import { getRecentConversationForModel } from "./conversation-history"
+
 import { getAIConfig } from "./config"
-import dotenv from "dotenv"
+import { getRecentConversationForModel } from "./conversation-history"
 
 let tokenCount = { sent: 0, received: 0 }
 

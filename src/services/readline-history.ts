@@ -1,4 +1,5 @@
 import readline from "readline"
+
 import { getUserInputHistory } from "./conversation-history"
 
 export interface ReadlineHistoryOptions {

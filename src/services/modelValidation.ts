@@ -1,5 +1,6 @@
-import { getAIConfig } from "./config"
 import dotenv from "dotenv"
+
+import { getAIConfig } from "./config"
 
 dotenv.config()
 

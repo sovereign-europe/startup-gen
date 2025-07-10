@@ -1,9 +1,12 @@
-import inquirer from "inquirer"
-import fs from "fs-extra"
 import { execSync } from "child_process"
+
+import fs from "fs-extra"
+import inquirer from "inquirer"
+
 import { createConfig } from "../utils/config"
-import { createReadme } from "./init/createReadme"
+
 import { createGitIgnore } from "./init/createGitIgnore"
+import { createReadme } from "./init/createReadme"
 
 export async function initCommand() {
   try {
