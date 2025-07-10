@@ -3,7 +3,7 @@ import React from "react"
 import { ProgressBar as InkProgressBar } from "@inkjs/ui"
 import { Box, Text } from "ink"
 
-import { Goal } from "../Goal"
+import { Goal } from "../types/Goal"
 
 import Divider from "./Divider"
 
