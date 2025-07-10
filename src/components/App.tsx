@@ -10,6 +10,7 @@ import { validateModelConfiguration, ModelValidationResult } from "../services/m
 import { STARTUP_ASCII } from "../utils/ascii-art"
 
 import Divider from "./Divider"
+import { Messages } from "./Messages"
 import { StatusPanel } from "./StatusPanel"
 import { StyledTextInput } from "./StyledTextInput"
 
@@ -76,11 +77,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         </Text>
       </Box>
 
-      <Box flexDirection="column">
-        {output.map((line, index) => (
-          <Text key={index}>{line}</Text>
-        ))}
-      </Box>
+      <Messages output={output} />
 
       <Box>
         {isProcessing ? (
