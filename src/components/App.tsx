@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 
 import { StatusMessage } from "@inkjs/ui"
-import { Box, Spacer, Text, useApp } from "ink"
+import { Box, Spacer, Text } from "ink"
 
 import { getCommandNames } from "../commands/registry"
 import { processInteractiveInput } from "../services/interactiveService"
@@ -18,7 +18,6 @@ interface AppProps {
 }
 
 export const App: React.FC<AppProps> = ({ workingDirectory }) => {
-  const { exit } = useApp()
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
@@ -34,11 +33,6 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
     if (userInput.trim() === "") return
 
     setOutput((prev) => [...prev, `> ${userInput}`])
-
-    if (userInput.toLowerCase() === "/exit") {
-      exit()
-      return
-    }
 
     setIsProcessing(true)
     try {
