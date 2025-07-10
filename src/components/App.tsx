@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 
+import { Spinner } from "@inkjs/ui"
 import { Box, Text } from "ink"
 
 import { getCommandNames } from "../commands/registry"
@@ -94,12 +95,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
       <Box>
         {isProcessing ? (
-          <Box>
-            <Text color="white">&gt; </Text>
-            <Box borderStyle="single" borderColor="white" paddingLeft={1} paddingRight={1} width={60}>
-              <Text color="yellow">Processing...</Text>
-            </Box>
-          </Box>
+          <Spinner label="Loading" />
         ) : (
           <StyledTextInput
             placeholder="Ask me anything about your startup..."
