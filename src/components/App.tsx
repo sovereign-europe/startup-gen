@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react"
 import { Box, Spacer, Text, useApp } from "ink"
 import { StatusMessage } from "@inkjs/ui"
 import Divider from "./Divider"
-import { ProgressBar } from "./ProgressBar"
 import { StyledTextInput } from "./StyledTextInput"
-import { Goal } from "../Goal"
 import { processInteractiveInput } from "../services/interactiveService"
-import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
+
 import { getCommandNames } from "../commands/registry"
 import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
 import { getTokenCount } from "../services/llm"
 import { STARTUP_ASCII } from "../utils/ascii-art"
+import { StatusPanel } from "./StatusPanel"
 
 interface AppProps {
   workingDirectory: string
@@ -20,32 +19,13 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const { exit } = useApp()
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
-  const [customerInterviewCount, setCustomerInterviewCount] = useState(completedCustomerInterviews())
+
   const [modelValidation, setModelValidation] = useState<ModelValidationResult | null>(null)
   const [tokenCount, setTokenCount] = useState({ sent: 0, received: 0 })
 
-  const customerInterviewGoal: Goal = {
-    description: "Interview potential customers",
-    target: 15,
-    completed: customerInterviewCount,
-  }
-
-  const coFounderGoal: Goal = {
-    description: "Find a co-founder",
-    target: 3,
-    completed: 1,
-  }
-
   useEffect(() => {
-    const cleanup = watchCustomerInterviews((count) => {
-      setCustomerInterviewCount(count)
-    })
-
-    // Validate model configuration on startup
     const validation = validateModelConfiguration()
     setModelValidation(validation)
-
-    return cleanup
   }, [])
 
   const handleSubmit = async (userInput: string) => {
@@ -81,15 +61,8 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         <Text>📁 Working directory: {workingDirectory}</Text>
       </Box>
 
+      <StatusPanel></StatusPanel>
       <Divider />
-
-      <Box>
-        <Text>Your current stage: Finding product-market fit</Text>
-      </Box>
-
-      <ProgressBar goal={customerInterviewGoal} />
-      <ProgressBar goal={coFounderGoal} />
-      <Divider width={80} />
 
       <Box flexDirection="column">
         <Text>Ask me anything about your startup, or use slash commands for specific actions.</Text>
