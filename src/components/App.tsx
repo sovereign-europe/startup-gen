@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 
-import { StatusMessage } from "@inkjs/ui"
-import { Box, Spacer, Text } from "ink"
+import { Box, Text } from "ink"
 
 import { getCommandNames } from "../commands/registry"
 import { processInteractiveInput } from "../services/interactiveService"
 import { getTokenCount } from "../services/llm"
-import { validateModelConfiguration, ModelValidationResult } from "../services/modelValidation"
 import { STARTUP_ASCII } from "../utils/ascii-art"
 
+import { AiStatus } from "./AiStatus"
 import Divider from "./Divider"
 import { Messages } from "./Messages"
 import { StatusPanel } from "./StatusPanel"
@@ -22,13 +21,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const [output, setOutput] = useState<string[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const [modelValidation, setModelValidation] = useState<ModelValidationResult | null>(null)
   const [tokenCount, setTokenCount] = useState({ sent: 0, received: 0 })
-
-  useEffect(() => {
-    const validation = validateModelConfiguration()
-    setModelValidation(validation)
-  }, [])
 
   const handleSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return
@@ -95,18 +88,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
           />
         )}
       </Box>
-      <Box>
-        {modelValidation && (
-          <StatusMessage variant={modelValidation.isValid ? "success" : "error"}>
-            {modelValidation.message}
-            {modelValidation.details && ` - ${modelValidation.details}`}
-          </StatusMessage>
-        )}
-        <Spacer />
-        <Text>
-          Tokens: {tokenCount.sent} sent / {tokenCount.received} received
-        </Text>
-      </Box>
+      <AiStatus tokenCount={tokenCount}></AiStatus>
     </Box>
   )
 }
