@@ -1,3 +1,4 @@
+import { cofounderCommand } from "./cofounder/cofounder"
 import { initCommand } from "./init"
 import { modelCommand } from "./model"
 
@@ -26,6 +27,15 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
     category: "config",
     handler: async () => {
       await modelCommand()
+    },
+  },
+  cofounder: {
+    name: "cofounder",
+    description: "Do a co-founder matching interview",
+    icon: "🤖",
+    category: "config",
+    handler: async () => {
+      await cofounderCommand()
     },
   },
   exit: {
