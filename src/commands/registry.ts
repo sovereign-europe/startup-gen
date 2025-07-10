@@ -7,7 +7,7 @@ export interface CommandDefinition {
   description: string
   icon: string
   category: "core" | "build" | "system" | "config"
-  handler: () => Promise<void> | void
+  handler: () => Promise<void | string> | void | string
 }
 
 export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {

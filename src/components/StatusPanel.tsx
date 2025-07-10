@@ -2,8 +2,8 @@ import { useState, useEffect } from "react"
 
 import { Box, Text } from "ink"
 
-import { Goal } from "../Goal"
 import { completedCustomerInterviews, watchCustomerInterviews } from "../services/goalService"
+import { Goal } from "../types/Goal"
 
 import Divider from "./Divider"
 import { ProgressBar } from "./ProgressBar"

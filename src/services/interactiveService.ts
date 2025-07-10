@@ -17,6 +17,13 @@ export async function processInteractiveInput(input: string): Promise<string> {
       const commandDef = getCommand(commandName)!
       const commandOutput = `🚀 Executing command: /${commandName}`
 
+      // Special handling for commands that return data instead of executing UI
+      if (commandName === "cofounder") {
+        const result = await commandDef.handler()
+        await addMessageToHistory("assistant", `Started cofounder questionnaire`)
+        return result as string
+      }
+
       await commandDef.handler()
       await addMessageToHistory("assistant", `Executed command: ${commandName}`)
       return `${commandOutput}\n\n✅ Command executed successfully`
