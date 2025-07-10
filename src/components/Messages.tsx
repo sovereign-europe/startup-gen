@@ -1,14 +1,19 @@
 import { Box, Text } from "ink"
 
+import { Message } from "../types/Message"
+
 interface MessagesProps {
-  output: string[]
+  messages: Message[]
 }
 
-export const Messages: React.FC<MessagesProps> = ({ output }) => {
+export const Messages: React.FC<MessagesProps> = ({ messages }) => {
   return (
     <Box flexDirection="column">
-      {output.map((line, index) => (
-        <Text key={index}>{line}</Text>
+      {messages.map((message) => (
+        <Text key={message.id}>
+          {message.role === "user" ? "> " : ""}
+          {message.content}
+        </Text>
       ))}
     </Box>
   )

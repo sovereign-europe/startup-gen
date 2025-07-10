@@ -5,6 +5,7 @@ import { Box, Text } from "ink"
 import { getCommandNames } from "../commands/registry"
 import { processInteractiveInput } from "../services/interactiveService"
 import { getTokenCount } from "../services/llm"
+import { Message } from "../types/Message"
 import { STARTUP_ASCII } from "../utils/ascii-art"
 
 import { AiStatus } from "./AiStatus"
@@ -18,7 +19,7 @@ interface AppProps {
 }
 
 export const App: React.FC<AppProps> = ({ workingDirectory }) => {
-  const [output, setOutput] = useState<string[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
 
   const [tokenCount, setTokenCount] = useState({ sent: 0, received: 0 })
@@ -26,15 +27,34 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const handleSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return
 
-    setOutput((prev) => [...prev, `> ${userInput}`])
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: userInput,
+      timestamp: new Date().toISOString(),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
 
     setIsProcessing(true)
     try {
       const result = await processInteractiveInput(userInput)
-      setOutput((prev) => [...prev, result])
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: result,
+        timestamp: new Date().toISOString(),
+      }
+      setMessages((prev) => [...prev, assistantMessage])
       setTokenCount(getTokenCount())
     } catch (error) {
-      setOutput((prev) => [...prev, `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`])
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        timestamp: new Date().toISOString(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
     } finally {
       setIsProcessing(false)
     }
@@ -70,7 +90,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         </Text>
       </Box>
 
-      <Messages output={output} />
+      <Messages messages={messages} />
 
       <Box>
         {isProcessing ? (
