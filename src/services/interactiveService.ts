@@ -36,14 +36,12 @@ export async function processInteractiveInput(input: string): Promise<string> {
     return `${errorMessage}\n${availableCommands}\n${helpHint}`
   }
 
-  // Save user input to conversation history
   await addMessageToHistory("user", input)
 
   try {
     const response = await processWithLLM(input)
     const formattedResponse = await formatLLMResponse(response)
 
-    // Save assistant response to conversation history
     await addMessageToHistory("assistant", response)
 
     return formattedResponse
@@ -53,7 +51,6 @@ export async function processInteractiveInput(input: string): Promise<string> {
       .map((name) => `/${name}`)
       .join(", ")}\n   Type '/help' to see all available commands.`
 
-    // Save error as assistant response to conversation history
     await addMessageToHistory("assistant", `Error: ${error}`)
 
     return `${errorMessage}${helpText}`

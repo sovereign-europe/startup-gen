@@ -44,7 +44,6 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
     try {
       const result = await processInteractiveInput(userInput)
       setOutput((prev) => [...prev, result])
-      // Update token count display
       setTokenCount(getTokenCount())
     } catch (error) {
       setOutput((prev) => [...prev, `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`])
