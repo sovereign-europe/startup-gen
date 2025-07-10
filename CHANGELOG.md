@@ -1,3 +1,11 @@
+# [1.6.0](https://github.com/sovereign-europe/startup-gen/compare/v1.5.0...v1.6.0) (2025-07-10)
+
+
+### Features
+
+* add co-founder matching questionnaire ([9f13420](https://github.com/sovereign-europe/startup-gen/commit/9f13420bd06703cfc0b27be1e04cce2da53cc87a))
+* implement co-founder matching ([7f59ddc](https://github.com/sovereign-europe/startup-gen/commit/7f59ddcfcba70cda412d1cf909fe9d8a09be0596))
+
 # [1.5.0](https://github.com/sovereign-europe/startup-gen/compare/v1.4.1...v1.5.0) (2025-07-04)
 
 
