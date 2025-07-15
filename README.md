@@ -2,7 +2,7 @@
 
 <div align="center">
 
-A CLI tool for early-stage startups to build lean startup methodology. This tool helps entrepreneurs systematically approach building their startup using proven lean startup principles.
+A CLI tool for early-stage startups to create your startup. This tool helps entrepreneurs systematically approach building their startup using proven lean startup principles.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
@@ -12,8 +12,8 @@ A CLI tool for early-stage startups to build lean startup methodology. This tool
 
 ## ✨ Features
 
-- **Project Initialization**: Set up a new startup project with proper structure
-- **Customer Segment Analysis**: Create detailed customer personas using AI
+- **📱 Finding Product-Market Fit**: Find your product-market fit in a structured way
+- **🧍 Finding Co-Founders**: Find potential co-founders that are aligned with your vision and values
 
 ## Usage
 
