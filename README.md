@@ -15,15 +15,22 @@ A CLI tool for early-stage startups to create your startup. This tool helps entr
 - **📱 Finding Product-Market Fit**: Find your product-market fit in a structured way
 - **🧍 Finding Co-Founders**: Find potential co-founders that are aligned with your vision and values
 
-## Usage
-
-To install Startup Gen, use NPM:
+## Installation
 
 ```
 npm install -g startup-gen
 ```
 
-To run Startup Gen, simply call the Startup Gen CLI:
+## Usage
+
+1. Create a folder for your new startup
+
+```
+mkdir my-unicorn
+cd my-unicorn
+```
+
+2. Run Startup Gen
 
 ```
 startup
