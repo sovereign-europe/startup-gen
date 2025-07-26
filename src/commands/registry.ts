@@ -1,6 +1,7 @@
 import { cofounderCommand } from "./cofounder/cofounder"
 import { initCommand } from "./init"
 import { modelCommand } from "./model"
+import { problemCommand } from "./problem"
 
 export interface CommandDefinition {
   name: string
@@ -36,6 +37,15 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
     category: "config",
     handler: async () => {
       await cofounderCommand()
+    },
+  },
+  problem: {
+    name: "problem",
+    description: "Get feedback on your problem definition",
+    icon: "🔍",
+    category: "build",
+    handler: async () => {
+      await problemCommand()
     },
   },
   exit: {

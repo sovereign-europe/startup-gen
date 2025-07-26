@@ -1,3 +1,17 @@
+# [1.9.0](https://github.com/sovereign-europe/startup-gen/compare/v1.8.0...v1.9.0) (2025-07-26)
+
+
+### Features
+
+* **problem.ts:** add functionality to extract existing problem description from markdown file and prompt user for input if not found ([5ba3b1a](https://github.com/sovereign-europe/startup-gen/commit/5ba3b1a677702c081462a9f6e101205ffb5b7abd))
+
+# [1.8.0](https://github.com/sovereign-europe/startup-gen/compare/v1.7.0...v1.8.0) (2025-07-26)
+
+
+### Features
+
+* **problem:** add problem definition analysis command and prompt template to provide actionable feedback for startups ([430e403](https://github.com/sovereign-europe/startup-gen/commit/430e40365c5b3ac1ef5c6938891027ad7adb7eec))
+
 # [1.7.0](https://github.com/sovereign-europe/startup-gen/compare/v1.6.0...v1.7.0) (2025-07-26)
 
 
