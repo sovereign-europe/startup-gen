@@ -5,6 +5,7 @@ import fs from "fs-extra"
 import Mustache from "mustache"
 
 import { problemDescriptionPrompt } from "../../prompts/problem-description"
+import { formatLLMResponse } from "../../services/formatLLMResponse"
 import { getLLMModel, getLLMConfig } from "../../utils/llm-config"
 
 import { extractProblemFromMarkdown } from "./extractProblemFromMarkdown"
@@ -78,9 +79,10 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
 
     const aiAnalysis = result.text
 
-    // Display the AI analysis in the app
+    // Display the AI analysis in the app (format markdown for terminal display)
     sendMessage("✅ **Analysis Results:**")
-    sendMessage(aiAnalysis)
+    const formattedAnalysis = await formatLLMResponse(aiAnalysis)
+    sendMessage(formattedAnalysis)
 
     // Additionally append the AI analysis to the problem file
     const analysisSection = `
