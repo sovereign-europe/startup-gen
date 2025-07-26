@@ -22,10 +22,10 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
   try {
     sendMessage("🔍 **Problem Definition Analysis**\n" + "─".repeat(50))
 
-    // Create problems directory if it doesn't exist
-    const problemsDir = path.join(process.cwd(), "problem")
-    await fs.ensureDir(problemsDir)
-    const problemFilePath = path.join(problemsDir, "problem.md")
+    // Create problem directory if it doesn't exist
+    const problemDir = path.join(process.cwd(), "problem")
+    await fs.ensureDir(problemDir)
+    const problemFilePath = path.join(problemDir, "problem.md")
 
     let problemDescription: string
 
@@ -39,7 +39,7 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
 
         if (!problemDescription) {
           const errorMessage =
-            "⚠️  Could not extract problem description from existing file. Please create a new problem file with a clear problem statement in the '## Original Problem Statement' section."
+            "⚠️  Could not extract problem description from existing file. Please ensure your markdown file has at least one heading with content."
           sendMessage(errorMessage)
           return messages.join("\n\n")
         } else {
@@ -54,7 +54,7 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
       }
     } else {
       const errorMessage =
-        "❌ **No problem file found!**\n\nTo use the problem analysis feature:\n1. First create a file at `problems/problem.md`\n2. Add your problem description in the '## Original Problem Statement' section\n3. Then run `/problem` again to get AI analysis\n\n**Example format:**\n```\n# Problem Definition\n\n## Original Problem Statement\nYour problem description here...\n\n## Analysis Date\n2025-01-26\n\n---\n```"
+        "❌ **No problem file found!**\n\nTo use the problem analysis feature:\n1. First create a file at `problem/problem.md`\n2. Add your problem description under any heading\n3. Then run `/problem` again to get AI analysis\n\n**Example format:**\n```\n# My Startup Problem\n\nDescribe your problem here. This content will be extracted and analyzed.\n\n## Additional Details\nAny subheadings won't be included in the analysis.\n```"
       sendMessage(errorMessage)
       return messages.join("\n\n")
     }
