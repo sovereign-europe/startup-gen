@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/sovereign-europe/startup-gen/compare/v1.9.0...v1.10.0) (2025-07-26)
+
+
+### Features
+
+* **problem.ts:** refactor problem analysis prompt loading to use a dedicated prompt module for better maintainability ([623ed32](https://github.com/sovereign-europe/startup-gen/commit/623ed32d118688542a61c02a50537723e6b0f4dd))
+
 # [1.9.0](https://github.com/sovereign-europe/startup-gen/compare/v1.8.0...v1.9.0) (2025-07-26)
 
 
