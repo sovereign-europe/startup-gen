@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/sovereign-europe/startup-gen/compare/v1.14.0...v1.15.0) (2025-07-26)
+
+
+### Features
+
+* **problem:** enhance problem command to accept user input for problem definition and create a new problem file if needed ([68d9284](https://github.com/sovereign-europe/startup-gen/commit/68d9284e5c17aa2cd198a24b3904560f6d8cbb34))
+
 # [1.14.0](https://github.com/sovereign-europe/startup-gen/compare/v1.13.0...v1.14.0) (2025-07-26)
 
 
