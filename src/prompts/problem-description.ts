@@ -1,4 +1,4 @@
-# Problem Description Analysis Prompt
+export const problemDescriptionPrompt = `# Problem Description Analysis Prompt
 
 You are an expert startup advisor and lean startup methodology coach. Your task is to analyze a problem description provided by an early-stage startup founder and provide comprehensive, actionable feedback to help them improve their problem definition.
 
@@ -65,4 +65,4 @@ Provide your response in the following structure:
 ### Key Questions to Answer
 - [3-5 critical questions the founder should be able to answer about their problem]
 
-Remember: Focus on helping the founder build a problem definition that is specific, validated by real customer pain, and represents a significant market opportunity.
+Remember: Focus on helping the founder build a problem definition that is specific, validated by real customer pain, and represents a significant market opportunity.`

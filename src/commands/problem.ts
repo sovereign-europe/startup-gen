@@ -5,6 +5,7 @@ import fs from "fs-extra"
 import inquirer from "inquirer"
 import Mustache from "mustache"
 
+import { problemDescriptionPrompt } from "../prompts/problem-description"
 import { getLLMModel, getLLMConfig } from "../utils/llm-config"
 
 // Helper function to extract problem description from existing markdown file
@@ -127,19 +128,9 @@ ${new Date().toISOString().split("T")[0]}
 
     // Load and process the analysis prompt
     console.log("🔍 Getting AI feedback on your problem definition...")
-    const promptPath = path.join(process.cwd(), "prompts", "problem-description.md")
-
-    let promptTemplate: string
-    try {
-      promptTemplate = await fs.readFile(promptPath, "utf-8")
-    } catch {
-      console.error("❌ Error: Could not find problem analysis prompt at prompts/problem-description.md")
-      console.log("💡 Make sure the prompts directory exists and contains the problem-description.md file")
-      return
-    }
 
     // Render the prompt with the problem description
-    const analysisPrompt = Mustache.render(promptTemplate, {
+    const analysisPrompt = Mustache.render(problemDescriptionPrompt, {
       problemDescription: problemDescription.trim(),
     })
 
