@@ -1,3 +1,23 @@
+# [1.13.0](https://github.com/sovereign-europe/startup-gen/compare/v1.12.0...v1.13.0) (2025-07-26)
+
+
+### Features
+
+* **problem.ts:** enhance problem command to display AI analysis results in the app and append them to the problem file for better user feedback ([ee3f4d7](https://github.com/sovereign-europe/startup-gen/commit/ee3f4d7a6a2704fb706ddaeb44267d1016a71a4b))
+
+# [1.12.0](https://github.com/sovereign-europe/startup-gen/compare/v1.11.0...v1.12.0) (2025-07-26)
+
+
+### Bug Fixes
+
+* **problem.ts:** update problems directory name from "problems" to "problem" for consistency with naming conventions ([7cb3c63](https://github.com/sovereign-europe/startup-gen/commit/7cb3c630d37eb5dbc2881cd8d6ee84399ee532fd))
+
+
+### Features
+
+* **problem:** add problem command to analyze and extract problem description from markdown files ([8923bb0](https://github.com/sovereign-europe/startup-gen/commit/8923bb0c56ef3aa87e9341184127021afb9077ff))
+* **problem:** add problem definition markdown file and enhance extraction logic ([f6a8463](https://github.com/sovereign-europe/startup-gen/commit/f6a84632490f97831ceaea2d8a571c735eb2c7ae))
+
 # [1.11.0](https://github.com/sovereign-europe/startup-gen/compare/v1.10.0...v1.11.0) (2025-07-26)
 
 

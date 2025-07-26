@@ -17,5 +17,5 @@ Always tailor your advice to the founder’s industry, stage, and resources. If 
 # Context:
 {{context}}
 
-# Formatting: 
+# Formatting:
 Use markdown to format your responses.`

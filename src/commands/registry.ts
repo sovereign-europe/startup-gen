@@ -1,7 +1,7 @@
 import { cofounderCommand } from "./cofounder/cofounder"
 import { initCommand } from "./init"
 import { modelCommand } from "./model"
-import { problemCommand } from "./problem"
+import { problemCommand } from "./problem/problem"
 
 export interface CommandDefinition {
   name: string
