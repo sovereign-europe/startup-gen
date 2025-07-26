@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/sovereign-europe/startup-gen/compare/v1.6.0...v1.7.0) (2025-07-26)
+
+
+### Features
+
+* hide status panel for now ([d11c17d](https://github.com/sovereign-europe/startup-gen/commit/d11c17de205cfbda1e4d46635050444a4a91d215))
+
 # [1.6.0](https://github.com/sovereign-europe/startup-gen/compare/v1.5.0...v1.6.0) (2025-07-10)
 
 
