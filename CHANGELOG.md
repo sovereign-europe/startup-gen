@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/sovereign-europe/startup-gen/compare/v1.12.0...v1.13.0) (2025-07-26)
+
+
+### Features
+
+* **problem.ts:** enhance problem command to display AI analysis results in the app and append them to the problem file for better user feedback ([ee3f4d7](https://github.com/sovereign-europe/startup-gen/commit/ee3f4d7a6a2704fb706ddaeb44267d1016a71a4b))
+
 # [1.12.0](https://github.com/sovereign-europe/startup-gen/compare/v1.11.0...v1.12.0) (2025-07-26)
 
 
