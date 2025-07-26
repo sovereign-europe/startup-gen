@@ -45,6 +45,14 @@ startup
 - TypeScript
 - [ink](https://github.com/vadimdemedes/ink)
 
+## Development
+
+Run the development server with a different directory than the current one:
+
+```
+npm run dev -- -d "../any-startup"
+```
+
 ## Contributing
 
 We welcome contributions! Please follow these steps:
