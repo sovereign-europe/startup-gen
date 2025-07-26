@@ -13,7 +13,6 @@ import { STARTUP_ASCII } from "../utils/ascii-art"
 import { AiStatus } from "./AiStatus"
 import Divider from "./Divider"
 import { Messages } from "./Messages"
-import { StatusPanel } from "./StatusPanel"
 import { StyledTextInput } from "./StyledTextInput"
 
 interface AppProps {
@@ -155,7 +154,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         <Text>📁 Working directory: {workingDirectory}</Text>
       </Box>
 
-      <StatusPanel></StatusPanel>
+      {/* <StatusPanel></StatusPanel> */}
       <Divider />
 
       <Box flexDirection="column">
