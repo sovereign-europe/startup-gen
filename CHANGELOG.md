@@ -1,3 +1,10 @@
+# [1.14.0](https://github.com/sovereign-europe/startup-gen/compare/v1.13.0...v1.14.0) (2025-07-26)
+
+
+### Features
+
+* **problem.ts:** integrate formatLLMResponse to format AI analysis for terminal display to enhance readability ([2017a8d](https://github.com/sovereign-europe/startup-gen/commit/2017a8dcf7918e795e32c17dc40e377ceff70c5c))
+
 # [1.13.0](https://github.com/sovereign-europe/startup-gen/compare/v1.12.0...v1.13.0) (2025-07-26)
 
 
