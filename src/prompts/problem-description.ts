@@ -6,28 +6,9 @@ You are an expert startup advisor and lean startup methodology coach. Your task 
 {{problemDescription}}
 
 ## Your Analysis Should Include:
-
-### 1. Problem Clarity Assessment
 - Is the problem clearly defined and specific?
 - Is it focused on a particular customer segment?
 - Does it avoid being too broad or vague?
-
-### 2. Problem Validation Criteria
-Evaluate the problem against these key criteria:
-- **Pain Level**: How painful is this problem for the target customers?
-- **Frequency**: How often do customers experience this problem?
-- **Urgency**: How urgently do customers need this problem solved?
-- **Market Size**: How many people have this problem?
-
-### 3. Evidence and Research
-- What evidence supports the existence of this problem?
-- Are there specific examples or customer quotes?
-- Has the founder done any customer interviews or validation?
-
-### 4. Competitive Landscape
-- What existing solutions attempt to solve this problem?
-- Why do current solutions fail to adequately solve it?
-- What gap exists in the market?
 
 ## Provide Specific, Actionable Feedback Tasks:
 
