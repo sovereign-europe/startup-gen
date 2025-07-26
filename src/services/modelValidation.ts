@@ -59,7 +59,7 @@ export function validateModelConfiguration(): ModelValidationResult {
     // All checks passed
     return {
       isValid: true,
-      message: `AI ready`,
+      message: `AI ready (${provider})`,
     }
   } catch (error) {
     return {
