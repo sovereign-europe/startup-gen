@@ -27,9 +27,6 @@ Examples of good tasks:
 
 Provide your response in the following structure:
 
-### Problem Analysis Summary
-[2-3 sentences summarizing the current state of the problem description]
-
 ### Strengths
 - [List 2-3 things that are well-defined about this problem]
 
@@ -40,10 +37,6 @@ Provide your response in the following structure:
 1. [Specific actionable task]
 2. [Specific actionable task]
 3. [Specific actionable task]
-4. [Specific actionable task]
-5. [Add more tasks as needed]
 
-### Key Questions to Answer
-- [3-5 critical questions the founder should be able to answer about their problem]
 
-Remember: Focus on helping the founder build a problem definition that is specific, validated by real customer pain, and represents a significant market opportunity.`
+Be concise`
