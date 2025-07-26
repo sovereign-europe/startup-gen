@@ -45,6 +45,23 @@ startup
 - TypeScript
 - [Inquirer.js](https://github.com/SBoudrias/Inquirer.js)
 
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes and add tests if applicable
+4. Run `npm test` and `npm run lint` to ensure quality
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+Please ensure your PR includes:
+- Clear description of changes
+- Tests for new functionality
+- Updated documentation if needed
+
 ## License
 
 MIT
