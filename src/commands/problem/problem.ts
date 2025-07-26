@@ -10,7 +10,10 @@ import { getLLMModel, getLLMConfig } from "../../utils/llm-config"
 
 import { extractProblemFromMarkdown } from "./extractProblemFromMarkdown"
 
-export async function problemCommand(onMessage?: (message: string) => void): Promise<string> {
+export async function problemCommand(
+  onMessage?: (message: string) => void,
+  userProblemInput?: string,
+): Promise<string> {
   const messages: string[] = []
 
   const sendMessage = (message: string) => {
@@ -30,7 +33,7 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
 
     let problemDescription: string
 
-    // Check if problem file already exists
+    // Check if problem file already exists or if we have user input to create one
     if (await fs.pathExists(problemFilePath)) {
       sendMessage("📄 Found existing problem file. Analyzing current problem definition...")
 
@@ -53,11 +56,33 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
         sendMessage(errorMessage)
         return messages.join("\n\n")
       }
+    } else if (userProblemInput) {
+      // We have user input to create a new problem file
+      sendMessage("📝 Creating your problem definition...")
+
+      problemDescription = userProblemInput.trim()
+
+      // Create the problem file
+      const initialContent = `# Problem Definition
+
+## Problem Statement
+${problemDescription}
+
+## Analysis Date
+${new Date().toISOString().split("T")[0]}
+
+---
+
+`
+
+      await fs.writeFile(problemFilePath, initialContent)
+      sendMessage(`📄 Problem saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+      sendMessage(
+        `📋 **Your problem:** ${problemDescription.substring(0, 200)}${problemDescription.length > 200 ? "..." : ""}`,
+      )
     } else {
-      const errorMessage =
-        "❌ **No problem file found!**\n\nTo use the problem analysis feature:\n1. First create a file at `problem/problem.md`\n2. Add your problem description under any heading\n3. Then run `/problem` again to get AI analysis\n\n**Example format:**\n```\n# My Startup Problem\n\nDescribe your problem here. This content will be extracted and analyzed.\n\n## Additional Details\nAny subheadings won't be included in the analysis.\n```"
-      sendMessage(errorMessage)
-      return messages.join("\n\n")
+      // No problem file exists - we need to collect the problem description from user
+      return "PROBLEM_INPUT_NEEDED"
     }
 
     sendMessage("🤖 Analyzing your problem definition...")

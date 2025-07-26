@@ -5,7 +5,7 @@ import { Box, Text } from "ink"
 
 import { getCommandNames } from "../commands/registry"
 import { useCofounderQuestionnaire } from "../hooks/useCofounderQuestionnaire"
-import { processInteractiveInput } from "../services/interactiveService"
+import { processInteractiveInput, processProblemInput } from "../services/interactiveService"
 import { getTokenCount } from "../services/llm"
 import { Message } from "../types/Message"
 import { STARTUP_ASCII } from "../utils/ascii-art"
@@ -23,6 +23,7 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [tokenCount, setTokenCount] = useState({ sent: 0, received: 0 })
+  const [waitingForProblemInput, setWaitingForProblemInput] = useState(false)
 
   const cofounderQuestionnaire = useCofounderQuestionnaire()
 
@@ -59,6 +60,43 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
   const handleSubmit = async (userInput: string) => {
     if (userInput.trim() === "") return
+
+    // If we're waiting for problem input, handle it specially
+    if (waitingForProblemInput) {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        role: "user",
+        content: userInput,
+        timestamp: new Date().toISOString(),
+      }
+      setMessages((prev) => [...prev, userMessage])
+
+      setIsProcessing(true)
+      setWaitingForProblemInput(false)
+
+      try {
+        const result = await processProblemInput(userInput)
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: result,
+          timestamp: new Date().toISOString(),
+        }
+        setMessages((prev) => [...prev, assistantMessage])
+        setTokenCount(getTokenCount())
+      } catch (error) {
+        const errorMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: `❌ Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+          timestamp: new Date().toISOString(),
+        }
+        setMessages((prev) => [...prev, errorMessage])
+      } finally {
+        setIsProcessing(false)
+      }
+      return
+    }
 
     // If we're in cofounder questionnaire mode, handle answers differently
     if (cofounderQuestionnaire.state.questionnaire && !cofounderQuestionnaire.state.isComplete) {
@@ -121,6 +159,16 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
           timestamp: new Date().toISOString(),
         }
         setMessages((prev) => [...prev, welcomeMessage])
+      } else if (result === "PROBLEM_INPUT_NEEDED") {
+        // Problem command needs user input to create problem file
+        setWaitingForProblemInput(true)
+        const promptMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: "🤔 What is the problem you're solving?",
+          timestamp: new Date().toISOString(),
+        }
+        setMessages((prev) => [...prev, promptMessage])
       } else {
         const assistantMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -180,9 +228,11 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
         ) : (
           <StyledTextInput
             placeholder={
-              cofounderQuestionnaire.state.questionnaire && !cofounderQuestionnaire.state.isComplete
-                ? "Enter your answer..."
-                : "Ask me anything about your startup..."
+              waitingForProblemInput
+                ? "Enter your problem description..."
+                : cofounderQuestionnaire.state.questionnaire && !cofounderQuestionnaire.state.isComplete
+                  ? "Enter your answer..."
+                  : "Ask me anything about your startup..."
             }
             onSubmit={handleSubmit}
             commands={getCommandNames().map((name) => `/${name}`)}

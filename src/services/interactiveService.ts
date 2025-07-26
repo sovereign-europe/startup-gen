@@ -1,3 +1,4 @@
+import { problemCommand } from "../commands/problem/problem"
 import { getCommand, getCommandNames, isValidCommand } from "../commands/registry"
 
 import { addMessage as addMessageToHistory } from "./conversation-history"
@@ -27,6 +28,12 @@ export async function processInteractiveInput(input: string): Promise<string> {
       if (commandName === "problem") {
         const result = await commandDef.handler()
         await addMessageToHistory("assistant", `Executed problem analysis`)
+
+        // Handle special case where problem command needs input
+        if (result === "PROBLEM_INPUT_NEEDED") {
+          return "PROBLEM_INPUT_NEEDED"
+        }
+
         return result as string
       }
 
@@ -67,5 +74,19 @@ export async function processInteractiveInput(input: string): Promise<string> {
     await addMessageToHistory("assistant", `Error: ${error}`)
 
     return `${errorMessage}${helpText}`
+  }
+}
+
+export async function processProblemInput(problemDescription: string): Promise<string> {
+  await addMessageToHistory("user", problemDescription)
+
+  try {
+    const result = await problemCommand(undefined, problemDescription)
+    await addMessageToHistory("assistant", `Created problem definition and executed analysis`)
+    return result
+  } catch (error) {
+    const errorMessage = `❌ Error creating problem: ${error instanceof Error ? error.message : "Unknown error"}`
+    await addMessageToHistory("assistant", errorMessage)
+    return errorMessage
   }
 }
