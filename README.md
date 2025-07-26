@@ -43,7 +43,7 @@ startup
 
 ## Tech Stack
 - TypeScript
-- [Inquirer.js](https://github.com/SBoudrias/Inquirer.js)
+- [ink](https://github.com/vadimdemedes/ink)
 
 ## Contributing
 
