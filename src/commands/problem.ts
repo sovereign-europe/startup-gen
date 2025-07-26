@@ -2,7 +2,6 @@ import path from "path"
 
 import { generateText } from "ai"
 import fs from "fs-extra"
-import inquirer from "inquirer"
 import Mustache from "mustache"
 
 import { problemDescriptionPrompt } from "../prompts/problem-description"
@@ -33,10 +32,18 @@ function extractProblemFromMarkdown(content: string): string {
   return problemLines.join("\n").trim()
 }
 
-export async function problemCommand(): Promise<void> {
+export async function problemCommand(onMessage?: (message: string) => void): Promise<string> {
+  const messages: string[] = []
+
+  const sendMessage = (message: string) => {
+    messages.push(message)
+    if (onMessage) {
+      onMessage(message)
+    }
+  }
+
   try {
-    console.log("\n🔍 Problem Definition Analysis")
-    console.log("─".repeat(50))
+    sendMessage("🔍 **Problem Definition Analysis**\n" + "─".repeat(50))
 
     // Create problems directory if it doesn't exist
     const problemsDir = path.join(process.cwd(), "problems")
@@ -47,87 +54,38 @@ export async function problemCommand(): Promise<void> {
 
     // Check if problem file already exists
     if (await fs.pathExists(problemFilePath)) {
-      console.log("📄 Found existing problem file. Analyzing current problem definition...")
-      console.log("")
+      sendMessage("📄 Found existing problem file. Analyzing current problem definition...")
 
       try {
         const existingContent = await fs.readFile(problemFilePath, "utf-8")
         problemDescription = extractProblemFromMarkdown(existingContent)
 
         if (!problemDescription) {
-          console.log("⚠️  Could not extract problem description from existing file.")
-          console.log("📝 Please provide your problem description:")
-          const { newProblemDescription } = await inquirer.prompt([
-            {
-              type: "input",
-              name: "newProblemDescription",
-              message: "What is the problem you're solving?",
-              validate: (input: string) => {
-                if (!input.trim()) {
-                  return "Problem description cannot be empty"
-                }
-                if (input.trim().length < 10) {
-                  return "Please provide a more detailed problem description (at least 10 characters)"
-                }
-                return true
-              },
-            },
-          ])
-          problemDescription = newProblemDescription
+          const errorMessage =
+            "⚠️  Could not extract problem description from existing file. Please create a new problem file with a clear problem statement in the '## Original Problem Statement' section."
+          sendMessage(errorMessage)
+          return messages.join("\n\n")
         } else {
-          console.log(
-            `📋 Current problem: ${problemDescription.substring(0, 100)}${problemDescription.length > 100 ? "..." : ""}`,
+          sendMessage(
+            `📋 **Current problem:** ${problemDescription.substring(0, 200)}${problemDescription.length > 200 ? "..." : ""}`,
           )
         }
       } catch (error) {
-        console.error("❌ Error reading existing problem file:", error)
-        return
+        const errorMessage = `❌ Error reading existing problem file: ${error instanceof Error ? error.message : "Unknown error"}`
+        sendMessage(errorMessage)
+        return messages.join("\n\n")
       }
     } else {
-      console.log("Let's analyze your problem definition and get actionable feedback.")
-      console.log("")
-
-      // Ask user for their problem definition
-      const { newProblemDescription } = await inquirer.prompt([
-        {
-          type: "input",
-          name: "newProblemDescription",
-          message: "What is the problem you're solving?",
-          validate: (input: string) => {
-            if (!input.trim()) {
-              return "Problem description cannot be empty"
-            }
-            if (input.trim().length < 10) {
-              return "Please provide a more detailed problem description (at least 10 characters)"
-            }
-            return true
-          },
-        },
-      ])
-
-      problemDescription = newProblemDescription
-
-      // Save the problem description to file
-      const initialContent = `# Problem Definition
-
-## Original Problem Statement
-${problemDescription}
-
-## Analysis Date
-${new Date().toISOString().split("T")[0]}
-
----
-
-`
-
-      await fs.writeFile(problemFilePath, initialContent)
-      console.log(`📄 Problem saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+      const errorMessage =
+        "❌ **No problem file found!**\n\nTo use the problem analysis feature:\n1. First create a file at `problems/problem.md`\n2. Add your problem description in the '## Original Problem Statement' section\n3. Then run `/problem` again to get AI analysis\n\n**Example format:**\n```\n# Problem Definition\n\n## Original Problem Statement\nYour problem description here...\n\n## Analysis Date\n2025-01-26\n\n---\n```"
+      sendMessage(errorMessage)
+      return messages.join("\n\n")
     }
 
-    console.log("🤖 Analyzing your problem definition...")
+    sendMessage("🤖 Analyzing your problem definition...")
 
     // Load and process the analysis prompt
-    console.log("🔍 Getting AI feedback on your problem definition...")
+    sendMessage("🔍 Getting AI feedback on your problem definition...")
 
     // Render the prompt with the problem description
     const analysisPrompt = Mustache.render(problemDescriptionPrompt, {
@@ -156,16 +114,17 @@ ${aiAnalysis}
 
     await fs.appendFile(problemFilePath, analysisSection)
 
-    console.log("✅ Analysis complete!")
-    console.log(`📄 Full analysis saved to: ${path.relative(process.cwd(), problemFilePath)}`)
-    console.log("─".repeat(50))
-    console.log("📋 Next Steps:")
-    console.log("1. Review the analysis and action items in the generated file")
-    console.log("2. Complete the recommended tasks to validate your problem")
-    console.log("3. Update your problem definition based on your findings")
-    console.log("")
+    sendMessage("✅ **Analysis complete!**")
+    sendMessage(`📄 Full analysis saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+    sendMessage(
+      "─".repeat(50) +
+        "\n📋 **Next Steps:**\n1. Review the analysis and action items in the generated file\n2. Complete the recommended tasks to validate your problem\n3. Update your problem definition based on your findings",
+    )
+
+    return messages.join("\n\n")
   } catch (error) {
-    console.error("❌ Error analyzing problem:", error instanceof Error ? error.message : "Unknown error")
-    throw error
+    const errorMessage = `❌ Error analyzing problem: ${error instanceof Error ? error.message : "Unknown error"}`
+    sendMessage(errorMessage)
+    return messages.join("\n\n")
   }
 }

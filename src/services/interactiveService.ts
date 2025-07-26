@@ -24,6 +24,12 @@ export async function processInteractiveInput(input: string): Promise<string> {
         return result as string
       }
 
+      if (commandName === "problem") {
+        const result = await commandDef.handler()
+        await addMessageToHistory("assistant", `Executed problem analysis`)
+        return result as string
+      }
+
       await commandDef.handler()
       await addMessageToHistory("assistant", `Executed command: ${commandName}`)
       return `${commandOutput}\n\n✅ Command executed successfully`

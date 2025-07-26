@@ -45,7 +45,7 @@ export const COMMAND_REGISTRY: Record<string, CommandDefinition> = {
     icon: "🔍",
     category: "build",
     handler: async () => {
-      await problemCommand()
+      return await problemCommand()
     },
   },
   exit: {
