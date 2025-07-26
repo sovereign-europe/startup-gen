@@ -4,33 +4,10 @@ import { generateText } from "ai"
 import fs from "fs-extra"
 import Mustache from "mustache"
 
-import { problemDescriptionPrompt } from "../prompts/problem-description"
-import { getLLMModel, getLLMConfig } from "../utils/llm-config"
+import { problemDescriptionPrompt } from "../../prompts/problem-description"
+import { getLLMModel, getLLMConfig } from "../../utils/llm-config"
 
-// Helper function to extract problem description from existing markdown file
-function extractProblemFromMarkdown(content: string): string {
-  const lines = content.split("\n")
-  let inProblemSection = false
-  const problemLines: string[] = []
-
-  for (const line of lines) {
-    if (line.includes("## Original Problem Statement")) {
-      inProblemSection = true
-      continue
-    }
-
-    if (inProblemSection) {
-      if (line.startsWith("##") || line.startsWith("---")) {
-        break
-      }
-      if (line.trim()) {
-        problemLines.push(line)
-      }
-    }
-  }
-
-  return problemLines.join("\n").trim()
-}
+import { extractProblemFromMarkdown } from "./extractProblemFromMarkdown"
 
 export async function problemCommand(onMessage?: (message: string) => void): Promise<string> {
   const messages: string[] = []
