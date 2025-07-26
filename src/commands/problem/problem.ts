@@ -78,7 +78,11 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
 
     const aiAnalysis = result.text
 
-    // Append the AI analysis to the problem file
+    // Display the AI analysis in the app
+    sendMessage("✅ **Analysis Results:**")
+    sendMessage(aiAnalysis)
+
+    // Additionally append the AI analysis to the problem file
     const analysisSection = `
 ## AI Analysis and Feedback
 
@@ -91,11 +95,10 @@ ${aiAnalysis}
 
     await fs.appendFile(problemFilePath, analysisSection)
 
-    sendMessage("✅ **Analysis complete!**")
-    sendMessage(`📄 Full analysis saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+    sendMessage(`📄 Analysis also saved to: ${path.relative(process.cwd(), problemFilePath)}`)
     sendMessage(
       "─".repeat(50) +
-        "\n📋 **Next Steps:**\n1. Review the analysis and action items in the generated file\n2. Complete the recommended tasks to validate your problem\n3. Update your problem definition based on your findings",
+        "\n📋 **Next Steps:**\n1. Review the analysis and action items above\n2. Complete the recommended tasks to validate your problem\n3. Update your problem definition in `problem/problem.md`\n4. Re-run `/problem` to get fresh analysis after improvements",
     )
 
     return messages.join("\n\n")
