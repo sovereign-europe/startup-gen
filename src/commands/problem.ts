@@ -46,7 +46,7 @@ export async function problemCommand(onMessage?: (message: string) => void): Pro
     sendMessage("🔍 **Problem Definition Analysis**\n" + "─".repeat(50))
 
     // Create problems directory if it doesn't exist
-    const problemsDir = path.join(process.cwd(), "problems")
+    const problemsDir = path.join(process.cwd(), "problem")
     await fs.ensureDir(problemsDir)
     const problemFilePath = path.join(problemsDir, "problem.md")
 
