@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/sovereign-europe/startup-gen/compare/v1.10.0...v1.11.0) (2025-07-26)
+
+
+### Features
+
+* **problem:** add problem definition markdown file and enhance problem command for better user interaction ([317fae6](https://github.com/sovereign-europe/startup-gen/commit/317fae654891ce7f8bd19b2f1efa78e75663cf11))
+
 # [1.10.0](https://github.com/sovereign-europe/startup-gen/compare/v1.9.0...v1.10.0) (2025-07-26)
 
 
