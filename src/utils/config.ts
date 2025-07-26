@@ -35,8 +35,3 @@ export async function updateConfig(updates: Partial<StartupConfig>): Promise<voi
   const newConfig = { ...currentConfig, ...updates }
   await fs.writeJSON(CONFIG_FILE_NAME, newConfig, { spaces: 2 })
 }
-
-export async function shouldAutoCommit(): Promise<boolean> {
-  const config = await loadConfig()
-  return config.autoCommit
-}
