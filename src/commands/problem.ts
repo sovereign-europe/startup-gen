@@ -7,40 +7,107 @@ import Mustache from "mustache"
 
 import { getLLMModel, getLLMConfig } from "../utils/llm-config"
 
+// Helper function to extract problem description from existing markdown file
+function extractProblemFromMarkdown(content: string): string {
+  const lines = content.split("\n")
+  let inProblemSection = false
+  const problemLines: string[] = []
+
+  for (const line of lines) {
+    if (line.includes("## Original Problem Statement")) {
+      inProblemSection = true
+      continue
+    }
+
+    if (inProblemSection) {
+      if (line.startsWith("##") || line.startsWith("---")) {
+        break
+      }
+      if (line.trim()) {
+        problemLines.push(line)
+      }
+    }
+  }
+
+  return problemLines.join("\n").trim()
+}
+
 export async function problemCommand(): Promise<void> {
   try {
     console.log("\n🔍 Problem Definition Analysis")
     console.log("─".repeat(50))
-    console.log("Let's analyze your problem definition and get actionable feedback.")
-    console.log("")
-
-    // Ask user for their problem definition
-    const { problemDescription } = await inquirer.prompt([
-      {
-        type: "input",
-        name: "problemDescription",
-        message: "What is the problem you're solving?",
-        validate: (input: string) => {
-          if (!input.trim()) {
-            return "Problem description cannot be empty"
-          }
-          if (input.trim().length < 10) {
-            return "Please provide a more detailed problem description (at least 10 characters)"
-          }
-          return true
-        },
-      },
-    ])
-
-    console.log("🤖 Analyzing your problem definition...")
 
     // Create problems directory if it doesn't exist
     const problemsDir = path.join(process.cwd(), "problems")
     await fs.ensureDir(problemsDir)
-
-    // Save the problem description to file
     const problemFilePath = path.join(problemsDir, "problem.md")
-    const initialContent = `# Problem Definition
+
+    let problemDescription: string
+
+    // Check if problem file already exists
+    if (await fs.pathExists(problemFilePath)) {
+      console.log("📄 Found existing problem file. Analyzing current problem definition...")
+      console.log("")
+
+      try {
+        const existingContent = await fs.readFile(problemFilePath, "utf-8")
+        problemDescription = extractProblemFromMarkdown(existingContent)
+
+        if (!problemDescription) {
+          console.log("⚠️  Could not extract problem description from existing file.")
+          console.log("📝 Please provide your problem description:")
+          const { newProblemDescription } = await inquirer.prompt([
+            {
+              type: "input",
+              name: "newProblemDescription",
+              message: "What is the problem you're solving?",
+              validate: (input: string) => {
+                if (!input.trim()) {
+                  return "Problem description cannot be empty"
+                }
+                if (input.trim().length < 10) {
+                  return "Please provide a more detailed problem description (at least 10 characters)"
+                }
+                return true
+              },
+            },
+          ])
+          problemDescription = newProblemDescription
+        } else {
+          console.log(
+            `📋 Current problem: ${problemDescription.substring(0, 100)}${problemDescription.length > 100 ? "..." : ""}`,
+          )
+        }
+      } catch (error) {
+        console.error("❌ Error reading existing problem file:", error)
+        return
+      }
+    } else {
+      console.log("Let's analyze your problem definition and get actionable feedback.")
+      console.log("")
+
+      // Ask user for their problem definition
+      const { newProblemDescription } = await inquirer.prompt([
+        {
+          type: "input",
+          name: "newProblemDescription",
+          message: "What is the problem you're solving?",
+          validate: (input: string) => {
+            if (!input.trim()) {
+              return "Problem description cannot be empty"
+            }
+            if (input.trim().length < 10) {
+              return "Please provide a more detailed problem description (at least 10 characters)"
+            }
+            return true
+          },
+        },
+      ])
+
+      problemDescription = newProblemDescription
+
+      // Save the problem description to file
+      const initialContent = `# Problem Definition
 
 ## Original Problem Statement
 ${problemDescription}
@@ -52,8 +119,11 @@ ${new Date().toISOString().split("T")[0]}
 
 `
 
-    await fs.writeFile(problemFilePath, initialContent)
-    console.log(`📄 Problem saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+      await fs.writeFile(problemFilePath, initialContent)
+      console.log(`📄 Problem saved to: ${path.relative(process.cwd(), problemFilePath)}`)
+    }
+
+    console.log("🤖 Analyzing your problem definition...")
 
     // Load and process the analysis prompt
     console.log("🔍 Getting AI feedback on your problem definition...")
