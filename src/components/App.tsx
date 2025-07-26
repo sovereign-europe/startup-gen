@@ -159,13 +159,13 @@ export const App: React.FC<AppProps> = ({ workingDirectory }) => {
 
       <Box flexDirection="column">
         <Text>Ask me anything about your startup, or use slash commands for specific actions.</Text>
-        <Text></Text>
+        <Box marginTop={1} />
         <Text>🎯 Examples:</Text>
         <Text> 'How do I validate my startup idea?'</Text>
         <Text> 'What should I do first as a new founder?'</Text>
         <Text> '/init' (to set up a new project)</Text>
         <Text> '/build customer-segment' (to create personas)</Text>
-        <Text></Text>
+        <Box marginTop={1} />
         <Text>
           Slash commands:{" "}
           {getCommandNames()
